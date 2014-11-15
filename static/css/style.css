@@ -1,0 +1,113 @@
+body {
+	background: url("/static/bg.svg") no-repeat;
+}
+.app-container {
+max-width: 1200px;
+padding: 40px;
+margin-left: auto;
+margin-right: auto;
+background: rgba(255, 255, 255, 0.6);
+border-radius: 3px;
+box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
+}
+.header {margin-top:100px;}
+.header > h1 {
+font-family: 'Open Sans';
+display: block;
+margin-left: auto;
+margin-right: auto;
+text-align: center;
+clear: both;
+color: rgb(255, 182, 10);
+text-shadow: 2px 1px 4px rgb(180, 158, 158);
+font-size: 50px;
+}
+.header > h1 > a {text-decoration: none;color:rgb(255, 182, 10);}
+.searchContainer {
+width: 500px;
+text-align: center;
+margin-left: auto;
+margin-right: auto;
+}
+.searchContainer a.pure-button {padding: 13px 20px;}
+.button-xsmall {
+   font-size: 70%;
+}
+
+.button-small {
+    font-size: 85%;
+}
+
+.button-large {
+    font-size: 110%;
+}
+
+.button-xlarge {
+    font-size: 125%;
+}
+
+.searchContainer a.neon-border {
+padding: 10px 17px;
+border: 3px solid #3DB5FF;
+box-shadow: 0 0 1px #22cef9, 0 0 2px #22cef9, 0 0 6px #22cef9, 0 0 12px #22cef9, inset 0 0 1px #22cef9, inset 0 0 2px #22cef9, inset 0 0 6px #22cef9, inset 0 0 12px #22cef9;
+z-index: -9990;
+}
+.home-container .pure-button-primary {
+	min-width: 139px;
+	
+}
+.home-container .pure-button-primary {background-color: #2A7DC2;}
+.hrText{
+color: #2A7DC2;
+text-align: center;
+max-width: 179px;
+margin-left: auto;
+margin-right: auto;
+padding: 4px 0px;
+}
+.hrText .bar {
+height: 2px;
+width: 56px;
+background: #2A7DC2;
+display: inline-block;
+vertical-align: middle;
+}
+.hrText .text{
+display: inline-block;
+vertical-align: middle;
+line-height: 30px;
+text-transform: uppercase;
+}
+.enterAddressContainer i.fa-sort-desc{
+padding: 0 0 8px 0;
+color: #2A7DC2;
+font-size: 23px;
+}
+.searched-address {
+font-family: 'Open Sans';
+margin-top: 0
+}
+.searched-address span{
+font-weight: 700;
+}
+.searchFilters .filter {
+	padding-top: 18px;
+}
+.pure-form label {
+color: #2A7DC2;
+font-weight: 600;
+font-family: 'Open Sans';
+}
+.searchFilters .filter.radius {
+	padding: 0;
+	padding-bottom: 18px;
+}
+.searchFilters .filter.radius input {
+	width: 50px;
+	text-align: center;
+	padding: 6px;
+}
+.searchFilters .filter.businessType {
+padding-top: 0;
+padding-bottom: 18px;
+}

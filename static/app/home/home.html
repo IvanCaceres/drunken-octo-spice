@@ -1,0 +1,43 @@
+
+<div class="home-container">
+	
+<div class="searchContainer" ng-controller="SearchCtrl">
+<div class="searchFilters">
+	<div class="filter businessType">
+		<select ng-model="businessType" ng-options="type.business_type for type in types">
+			<option value="">-- choose a business type --</option>
+		</select>
+	</div>
+	<div class="filter radius">
+	<form class="pure-form">
+	<label>Search Radius:</label>
+	<input type="text" ng-model="radius" value="5">
+<!-- 	<select>
+		<option label="mi" value="miles">miles</option>
+		<option>kilometers</option>
+	</select> -->
+	<label>miles</label>
+	</form>
+	</div>
+</div>	
+<a class="pure-button pure-button-primary button-xlarge" ng-click="setSelected(searchTypes[0].name)" ng-class="{'neon-border' : isSelected(searchTypes[0].name)}">{{searchTypes[0].name}}</a>
+<div class="hrText">
+	<div class="bar">
+	</div>
+	<div class="text">Or
+	</div>
+	<div class="bar">
+	</div>
+</div>
+<a class="pure-button pure-button-primary button-xlarge" ng-click="setSelected(searchTypes[1].name)" ng-class="{'neon-border' : isSelected(searchTypes[1].name)}">{{searchTypes[1].name}}</a>
+<div class="enterAddressContainer" ng-show="selected === searchTypes[1].name">
+	<i class="fa fa-sort-desc"></i>
+	<form class="pure-form" ng-submit="searchSubmit()">
+		<input type="text" placeholder="Street Address, City, State" ng-model="address">
+		<button type="submit" class="pure-button pure-button-primary">Go</button>
+	</form>
+</div>
+
+</div>
+
+</div>
