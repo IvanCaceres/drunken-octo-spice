@@ -1,5 +1,5 @@
 from django.contrib import admin
-from webapp.models import Address, SubscriptionTier, BusinessType, Business, BusinessLocation, Service, Appointment, Review
+from webapp.models import Address, SubscriptionTier, BusinessType, Business, BusinessLocation, Service, Appointment, Review, OpeningHours, Availability
 
 # Register your models here.
 admin.site.register(BusinessType)
@@ -7,6 +7,8 @@ admin.site.register(SubscriptionTier)
 admin.site.register(Address)
 admin.site.register(Appointment)
 admin.site.register(Service)
+admin.site.register(OpeningHours)
+admin.site.register(Availability)
 class BusinessLocationInline(admin.StackedInline):
 	model = BusinessLocation
 	extra = 2

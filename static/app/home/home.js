@@ -194,3 +194,54 @@ if(User.address){
 // google.maps.event.addDomListener(window, 'load', function() {
 
 }]);
+app.controller('authController', ['$scope','api', function($scope, api) {
+        // Angular does not detect auto-fill or auto-complete. If the browser
+        // autofills "username", Angular will be unaware of this and think
+        // the $scope.username is blank. To workaround this we use the 
+        // autofill-event polyfill [4][5]
+        $('#id_auth_form input').checkAndTriggerAutoFillEvent();
+ 
+        $scope.getCredentials = function(){
+            return {username: $scope.username, password: $scope.password};
+        };
+ 
+        $scope.login = function(){
+          console.log('running login function')
+            api.auth.login($scope.getCredentials()).
+                $promise.
+                    then(function(data){
+                      console.log(data)
+                      console.log('triggered the then signalling data is good')
+                        // on good username and password
+                        $scope.user = $scope.username;
+                        console.log($scope)
+                    }).
+                    catch(function(data){
+                        // on incorrect username and password
+                        alert(data.data.detail);
+                    });
+        };
+ 
+        $scope.logout = function(){
+            api.auth.logout(function(){
+                $scope.user = undefined;
+            });
+        };
+        $scope.register = function($event){
+            // prevent login form from firing
+            $event.preventDefault();
+            // create user and immediatly login on success
+            api.users.create($scope.getCredentials()).
+                $promise.
+                    then($scope.login).
+                    catch(function(data){
+                        alert(data.data.username);
+                    });
+            };
+    }]);
+ 
+// [1] https://tools.ietf.org/html/rfc2617
+// [2] https://developer.mozilla.org/en-US/docs/Web/API/Window.btoa
+// [3] https://docs.djangoproject.com/en/dev/ref/settings/#append-slash
+// [4] https://github.com/tbosch/autofill-event
+// [5] http://remysharp.com/2010/10/08/what-is-a-polyfill/

@@ -7,7 +7,9 @@ from rest_framework import routers
 from rest_framework.decorators import api_view
 admin.autodiscover()
 
-# routers = routers.DefaultRouter(trailing_slash=False)
+router = routers.DefaultRouter()
+router.register(r'users', views.UserView, 'list')
+router.register(r'appointments', views.AppointmentViewSet, 'detail')
 # routers.register(r'api/users/create/', views.EmailUserCreateViewset)
 
 # @api_view(('GET',))
@@ -19,10 +21,12 @@ admin.autodiscover()
 
 urlpatterns = patterns(
     '',
-    url(r'^type/$', views.type_list.as_view()),
-    url(r'^address/$', views.address_list.as_view()),
-    url(r'^business/$', views.business_list.as_view()),
-    url(r'^business/location$', views.business_location_list.as_view()),
+    url(r'^api/', include(router.urls)),
+    url(r'^api/type/$', views.type_list.as_view()),
+    url(r'^api/address/$', views.address_list.as_view()),
+    url(r'^api/business/$', views.business_list.as_view()),
+    url(r'^api/business/location$', views.business_location_list.as_view()),
+    url(r'^api/auth/$', views.AuthView.as_view(),name='authenticate'),
 )
 
 # urlpatterns = format_suffix_patterns(urlpatterns)

@@ -1,5 +1,5 @@
-from webapp.models import Business, BusinessType, BusinessLocation, Address
-from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer
+from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment
+from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, UserSerializer, AppointmentSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -8,13 +8,68 @@ from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
 from geopy import distance
 from django.db import connection
+from django.contrib.auth import login, logout
+from authentication import QuietBasicAuthentication
+from django.contrib.auth.models import User
+from rest_framework import permissions
+from rest_framework.permissions import AllowAny
+from permissions import IsStaffOrTargetUser, IsOwnerOrReadOnly
+from rest_framework.exceptions import ParseError
+
+class UserView(viewsets.ModelViewSet):
+    serializer_class = UserSerializer
+    model = User
+ 
+    def get_permissions(self):
+        # allow non-authenticated user to create via POST
+        return (AllowAny() if self.request.method == 'POST'
+                else IsStaffOrTargetUser()),
+
+class AuthView(APIView):
+    authentication_classes = (QuietBasicAuthentication,)
+ 
+    def post(self, request, *args, **kwargs):
+        login(request, request.user)
+        return Response(UserSerializer(request.user).data)
+ 
+    def delete(self, request, *args, **kwargs):
+        logout(request)
+        return Response({})
 
 class type_list(generics.ListAPIView):
 	serializer_class = BusinessTypeSerializer
 	def get_queryset(self):
 		queryset = BusinessType.objects.all()
 		return queryset
-
+		
+class AppointmentViewSet(viewsets.ModelViewSet):
+	queryset = Appointment.objects.all()
+	serializer_class = AppointmentSerializer
+	permission_classes = (permissions.IsAuthenticatedOrReadOnly,
+                          IsOwnerOrReadOnly,)
+	# def get_queryset(self):
+	# 	queryset = Appointment.objects.all()
+	# 	return queryset
+	def create(self, request):
+		serializer = AppointmentSerializer(data=request.DATA)
+		return Response(serializer.errors,
+			status=status.HTTP_400_BAD_REQUEST)
+		# ParseError('there is no more room')
+	def pre_save(self, obj):
+		# ParseError('there is no more room')
+		obj.service_recipient = self.request.user
+	# def save(self, serializer):
+	# 	# serializer.save(user=self.request.user)	
+	# 	avQueryset = Availability.objects.filter(date__range=(self.when, self.when))
+	# 	r = list(avQueryset[:1])
+	# 	if r:
+	# 		if r[0].count > 0 :
+	# 			self.availability = r[0].id
+	# 			r[0].count - 1
+	# 		else:
+	# 			ParseError('there is no more room')
+	# 		self.when
+		
 class address_list(generics.ListAPIView):
 
 	serializer_class = AddressSerializer
@@ -24,6 +79,7 @@ class address_list(generics.ListAPIView):
 		List all addresses.
 		"""
 		queryset = Address.objects.all()
+		addresses = queryset
 		distanceParam = self.request.QUERY_PARAMS.get('distance', None)
 		business_type = self.request.QUERY_PARAMS.get('business_type', None)
 		#first float must be Latitude, second float longitude

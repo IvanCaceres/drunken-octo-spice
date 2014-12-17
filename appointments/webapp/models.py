@@ -1,7 +1,24 @@
 from django.db import models
 from django.conf import settings
+import datetime
+from datetime import datetime, time, date, timedelta
+
+def tomorrow():
+    d = date.today() + timedelta(days=1)
+    t = time(0, 0)
+    return datetime.combine(d, t)
 
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
+
+WEEKDAYS = [
+  (1, ("Monday")),
+  (2, ("Tuesday")),
+  (3, ("Wednesday")),
+  (4, ("Thursday")),
+  (5, ("Friday")),
+  (6, ("Saturday")),
+  (7, ("Sunday")),
+]
 
 # Create your models here.
 
@@ -43,6 +60,7 @@ class BusinessLocation(models.Model):
 	location_name = models.CharField(max_length=100)
 	description = models.TextField()
 	slug = models.CharField(max_length=30, null=True)
+	default_availability = models.IntegerField(blank=False, help_text="Enter the availability limit per hour.", default=0)
 	# address = models.ForeignKey(Address, related_name)
 	def __unicode__(self):
 		return self.location_name
@@ -75,13 +93,33 @@ class Service(models.Model):
 class Appointment(models.Model):
 	business_location = models.ForeignKey(BusinessLocation)
 	services = models.ManyToManyField(Service)
-	time = models.DateTimeField(auto_now=False)
+	# time = models.DateTimeField(auto_now=False, null=True)
 	service_recipient = models.ForeignKey(AUTH_USER_MODEL)
 	completed = models.BooleanField(default=False, help_text="Set to true when appointment has been completed.")
+	when = models.DateTimeField(blank=False, auto_now=False, null=True)
+	availability = models.ForeignKey(
+		'Availability', related_name = 'appointment'
+	)
+	# def __unicode__(self):
+	# 	return  u'%s %s %s %s %s' % (self.service_recipient," - ", self.business_location)
 	def __unicode__(self):
-		return  u'%s %s %s %s %s' % (self.service_recipient," - ", self.time, " - ", self.business_location)
+		return unicode(self.service_recipient)
 	class Meta:
 		verbose_name_plural = 'Appointments'
+
+class OpeningHours(models.Model):
+    store = models.ForeignKey(
+        BusinessLocation, related_name = 'open_hours'
+    )
+    weekday = models.IntegerField(
+        choices=WEEKDAYS,
+        unique=False
+    )
+    from_hour = models.TimeField()
+    to_hour = models.TimeField()
+
+    class Meta:
+    	unique_together=('weekday', 'store')
 
 class Review(models.Model):
 	appointment = models.ForeignKey(Appointment)
@@ -98,3 +136,10 @@ class Review(models.Model):
 		return self.review
 	class Meta:
 		verbose_name_plural = 'Reviews'
+
+class Availability(models.Model):
+	store = models.ForeignKey(
+        BusinessLocation, related_name = 'availability'
+    )
+	count = models.IntegerField(blank=False)
+	date = models.DateTimeField(blank = True, auto_now=False, null=True)

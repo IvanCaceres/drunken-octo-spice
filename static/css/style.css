@@ -111,3 +111,16 @@ font-family: 'Open Sans';
 padding-top: 0;
 padding-bottom: 18px;
 }
+.login-container{
+position: fixed;
+bottom: 0;
+max-width: 100%;
+padding: 15px;
+box-sizing: border-box;
+border-radius: 0;
+width: 100%;
+text-align: right;
+}
+.pure-button.pure-button-primary {
+background-color: #2A7DC2;
+}
