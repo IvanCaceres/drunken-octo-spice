@@ -24,11 +24,12 @@ class BusinessTypeSerializer(serializers.ModelSerializer):
 		fields = ('business_type', 'id',)
 
 class BusinessSerializer(serializers.ModelSerializer):
-	type = serializers.RelatedField(source='business_type')
+	# type = serializers.RelatedField(source='business_type')
+	business_type = BusinessTypeSerializer(many=False)
 	# locations = BusinessLocationSerializer(many=True)
 	class Meta:
 		model = Business
-		fields = ('type', 'business_name', 'description', 'registered_by', 'publication_status', 'payment_status')
+		fields = ('business_type', 'business_name', 'description', 'registered_by', 'publication_status', 'payment_status')
 
 class OpeningHoursSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -51,7 +52,7 @@ class AddressSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Appointment
-		fields = ('id', 'availability' , 'business_location', 'services', 'when', 'service_recipient', 'completed')
+		fields = ('availability' , 'business_location', 'services', 'when', 'service_recipient', 'completed')
 
 
 

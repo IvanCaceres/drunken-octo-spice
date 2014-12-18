@@ -1,4 +1,4 @@
-from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment
+from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, Availability
 from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, UserSerializer, AppointmentSerializer
 from django.http import Http404
 from rest_framework.views import APIView
@@ -14,7 +14,11 @@ from django.contrib.auth.models import User
 from rest_framework import permissions
 from rest_framework.permissions import AllowAny
 from permissions import IsStaffOrTargetUser, IsOwnerOrReadOnly
-from rest_framework.exceptions import ParseError
+from rest_framework.exceptions import ParseError, APIException
+
+class ServiceRejected(APIException):
+    status_code = 400
+    default_detail = 'Service temporarily unavailable, try again later.'
 
 class UserView(viewsets.ModelViewSet):
     serializer_class = UserSerializer
@@ -47,29 +51,40 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 	serializer_class = AppointmentSerializer
 	permission_classes = (permissions.IsAuthenticatedOrReadOnly,
                           IsOwnerOrReadOnly,)
-	# def get_queryset(self):
-	# 	queryset = Appointment.objects.all()
-	# 	return queryset
-	def create(self, request):
-		serializer = AppointmentSerializer(data=request.DATA)
+	def perform_create(self, serializer):
+		# serializer = AppointmentSerializer(data=request.data)
+		# return serializer
+		serializer.validated_data['service_recipient'] = self.request.user
+		avQueryset = Availability.objects.filter(date__range=(serializer.validated_data['when'], serializer.validated_data['when']))
+		r = list(avQueryset[:1])
+		if r:
+			if r[0].count > 0 :
+				###set the availability object####
+				serializer.validated_data['availability'] = r[0]
+				serializer.save()
+				newCount = r[0].count - 1
+				a = Availability.objects.get(id=r[0].id)
+				a.count = newCount
+				a.save()
+			else:
+				raise Exception('there is no more room')
+		else:
+			###get business location  to determine the default availability count###
+			bL = BusinessLocation.objects.get(id=serializer.validated_data['business_location'].id)
+			###create availability object since none was found###
+			aV = Availability.objects.create(date=serializer.validated_data['when'], count= bL.default_availability, store=bL)
+			newCount = aV.count - 1
+			aV.count = newCount
+			aV.save()
+			serializer.validated_data['availability'] = aV
+			serializer.save()
+			# raise Exception('Bang there is no more room')
+		# raise Exception('lol')
+		return ServiceRejected()
+		APIException()
 		return Response(serializer.errors,
 			status=status.HTTP_400_BAD_REQUEST)
-		# ParseError('there is no more room')
-	def pre_save(self, obj):
-		# ParseError('there is no more room')
-		obj.service_recipient = self.request.user
-	# def save(self, serializer):
-	# 	# serializer.save(user=self.request.user)	
-	# 	avQueryset = Availability.objects.filter(date__range=(self.when, self.when))
-	# 	r = list(avQueryset[:1])
-	# 	if r:
-	# 		if r[0].count > 0 :
-	# 			self.availability = r[0].id
-	# 			r[0].count - 1
-	# 		else:
-	# 			ParseError('there is no more room')
-	# 		self.when
-		
+
 class address_list(generics.ListAPIView):
 
 	serializer_class = AddressSerializer
