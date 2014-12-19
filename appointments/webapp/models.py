@@ -96,7 +96,7 @@ class Appointment(models.Model):
 	# time = models.DateTimeField(auto_now=False, null=True)
 	service_recipient = models.ForeignKey(AUTH_USER_MODEL)
 	completed = models.BooleanField(default=False, help_text="Set to true when appointment has been completed.")
-	when = models.DateTimeField(blank=False, auto_now=False, null=True)
+	when = models.DateTimeField(blank=False, auto_now=False, null=False)
 	availability = models.ForeignKey(
 		'Availability', related_name = 'appointment'
 	)

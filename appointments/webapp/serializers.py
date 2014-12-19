@@ -1,6 +1,6 @@
 from django.forms import widgets
 from rest_framework import serializers
-from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, OpeningHours
+from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, OpeningHours, Availability
 from django.contrib.auth.models import User
  
  
@@ -35,13 +35,17 @@ class OpeningHoursSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = OpeningHours
 		fields = ('store', 'weekday', 'from_hour', 'to_hour')				
-
+class AvailabilitySerializer(serializers.ModelSerializer):
+	class Meta:
+		model = Availability
+		fields = ('store','date','count')
 class BusinessLocationSerializer(serializers.ModelSerializer):
 	business = BusinessSerializer(many=False)
 	open_hours = OpeningHoursSerializer(many=True)
+	availability = AvailabilitySerializer(many=True)
 	class Meta:
 		model = BusinessLocation
-		fields = ('business', 'location_name', 'description', 'id', 'slug', 'address', 'open_hours')
+		fields = ('business', 'location_name', 'description', 'id', 'slug', 'address', 'open_hours', 'availability', 'default_availability')
 
 class AddressSerializer(serializers.ModelSerializer):
 	business_location = BusinessLocationSerializer(many=False)

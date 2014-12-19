@@ -1,16 +1,31 @@
 body {
+	text-align: center;
 	background: url("/static/bg.svg") no-repeat;
 }
 .app-container {
+display: inline-block;
 max-width: 1200px;
-padding: 40px;
+padding: 20px;
 margin-left: auto;
 margin-right: auto;
 background: rgba(255, 255, 255, 0.6);
 border-radius: 3px;
 box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
 }
-.header {margin-top:100px;}
+.home-container h3 {
+font-size: 16px;
+margin-top: 0;
+font-family: 'Open Sans';
+font-weight: 400;
+margin-bottom: 20px;
+}
+.home-container h3:last-child{
+	
+}
+.header {
+margin-top: 30px;
+margin-bottom: 30px;
+}
 .header > h1 {
 font-family: 'Open Sans';
 display: block;
@@ -29,7 +44,8 @@ text-align: center;
 margin-left: auto;
 margin-right: auto;
 }
-.searchContainer a.pure-button {padding: 13px 20px;}
+.searchContainer a.pure-button {padding: 13px 20px;display: inline-block;cursor: pointer;
+text-decoration: none;}
 .button-xsmall {
    font-size: 70%;
 }
@@ -100,7 +116,7 @@ font-family: 'Open Sans';
 }
 .searchFilters .filter.radius {
 	padding: 0;
-	padding-bottom: 18px;
+	padding-bottom: 20px;
 }
 .searchFilters .filter.radius input {
 	width: 50px;
@@ -109,7 +125,7 @@ font-family: 'Open Sans';
 }
 .searchFilters .filter.businessType {
 padding-top: 0;
-padding-bottom: 18px;
+padding-bottom: 20px;
 }
 .login-container{
 position: fixed;
@@ -120,7 +136,42 @@ box-sizing: border-box;
 border-radius: 0;
 width: 100%;
 text-align: right;
+background: none;
+box-shadow: none;
 }
 .pure-button.pure-button-primary {
 background-color: #2A7DC2;
+color: white;
+}
+#id_auth_form input.pure-button {
+	border:none;
+}
+#map-canvas {
+	width: 600px;
+}
+#stores{
+	width: 300px;
+	float: left;
+	margin-right: 10px;
+	border: solid 1px #ccc;
+}
+.store-container{
+	padding: 5px;
+}
+.store-container:hover {
+	cursor: pointer;
+	background: #eee;
+}
+.store-container > h1 {
+	font-size: 18px;
+}
+.store-container .title {
+	font-weight: bold;
+	margin-top: 0.2em;
+	margin-bottom: 0.5em;
+}
+.store-container .address {
+	font-size: 80%;
+	margin-top: 0.2em;
+	margin-bottom: 0.5em;
 }

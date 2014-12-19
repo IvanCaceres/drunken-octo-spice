@@ -3,9 +3,10 @@
 // Declare app level module which depends on views, and components
 angular.module('myApp', [
   'ui.router',
-  'ngResource',
+  'djangoRESTResources',
   'myApp.home',
-  'AppServices'
+  'AppServices',
+  'ui.bootstrap.datetimepicker'
 ]).
 // config(['$routeProvider', function($routeProvider) {
 //   $routeProvider.otherwise({redirectTo: '/view1'});

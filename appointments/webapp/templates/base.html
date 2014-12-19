@@ -8,10 +8,12 @@
         <title>Appointments Webapp</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href='{% static 'css/pure-min.css' %}' rel='stylesheet' type='text/css'>
+<!--         <link href='{% static 'css/pure-min.css' %}' rel='stylesheet' type='text/css'> -->
+        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" type='text/css'>
 		    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700' rel='stylesheet' type='text/css'>
         <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
         <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link rel="stylesheet" href="{% static 'css/datetimepicker.css' %}" type='text/css'>
         <script src="{% static 'js/modernizr.js' %}"></script>
         <link rel="stylesheet" href="{% static 'css/storelocator.css' %}">
         <base href="/">
@@ -65,12 +67,16 @@
         <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
         <script type="text/javascript" charset="utf-8"
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD1ND0HrKlPBZsRE22bwAjkY1rBooEMClY"></script>
+          <script type="text/javascript" src="/static/js/moment-with-locales.min.js"></script>
+          <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
           <script src="/static/js/angular/angular.js"></script>
           <script src="/static/js/angular/angular-resource.js"></script>
+          <script src="/static/js/angular/angular-django-rest-resource.js"></script>
           <script src="/static/js/angular/angular-ui-router.min.js"></script>
           <script src="/static/app/app.js"></script>
           <script src="/static/app/services.js"></script>
           <script src="/static/app/home/home.js"></script>
+          <script type="text/javascript" src="/static/js/datetimepicker.js"></script>
           <script src="/static/js/store-locator.min.js"></script>
           <script src="/static/js/autofill-event/src/autofill-event.js"></script>
           <!-- 

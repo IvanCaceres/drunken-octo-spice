@@ -1,5 +1,5 @@
 from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, Availability
-from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, UserSerializer, AppointmentSerializer
+from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, UserSerializer, AppointmentSerializer, AvailabilitySerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -15,7 +15,7 @@ from rest_framework import permissions
 from rest_framework.permissions import AllowAny
 from permissions import IsStaffOrTargetUser, IsOwnerOrReadOnly
 from rest_framework.exceptions import ParseError, APIException
-
+import dateutil.parser
 class ServiceRejected(APIException):
     status_code = 400
     default_detail = 'Service temporarily unavailable, try again later.'
@@ -55,8 +55,11 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 		# serializer = AppointmentSerializer(data=request.data)
 		# return serializer
 		serializer.validated_data['service_recipient'] = self.request.user
-		avQueryset = Availability.objects.filter(date__range=(serializer.validated_data['when'], serializer.validated_data['when']))
+		avQueryset = Availability.objects.filter(date__range=(serializer.validated_data['when'], serializer.validated_data['when']), store_id=serializer.validated_data['business_location'].id)
 		r = list(avQueryset[:1])
+		userCheck = avQueryset.filter(appointment__service_recipient = self.request.user)
+		if userCheck.exists():
+			raise APIException('you have already booked an appointment for this time slot at this location')
 		if r:
 			if r[0].count > 0 :
 				###set the availability object####
@@ -80,11 +83,27 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 			serializer.save()
 			# raise Exception('Bang there is no more room')
 		# raise Exception('lol')
-		return ServiceRejected()
+		return serializer
 		APIException()
 		return Response(serializer.errors,
 			status=status.HTTP_400_BAD_REQUEST)
 
+class AvailabilityViewSet(viewsets.ModelViewSet):
+	queryset = Availability.objects.all()
+	serializer_class = AvailabilitySerializer
+	def get_queryset(self):
+		"""
+		Filter the availabilities
+		"""
+		queryset = Availability.objects.all()
+		when = self.request.QUERY_PARAMS.get('when', None)
+		business_ids = self.request.QUERY_PARAMS.get('business_id', None)
+		if business_ids is not None:
+			business_ids = business_ids.split(',')
+			queryset = queryset.filter(store__in=[business_id for business_id in business_ids])
+		if when is not None:
+			queryset = queryset.filter(date__range=(when, when))
+		return queryset
 class address_list(generics.ListAPIView):
 
 	serializer_class = AddressSerializer
@@ -96,9 +115,11 @@ class address_list(generics.ListAPIView):
 		queryset = Address.objects.all()
 		addresses = queryset
 		distanceParam = self.request.QUERY_PARAMS.get('distance', None)
+		requestDate = self.request.QUERY_PARAMS.get('date', None)
 		business_type = self.request.QUERY_PARAMS.get('business_type', None)
 		#first float must be Latitude, second float longitude
 		locationParam = self.request.QUERY_PARAMS.get('location', None)
+		
 		if distanceParam is not None and locationParam is not None:
 			# cursor = connection.cursor()
 			# locationParam = str(locationParam)
@@ -107,14 +128,21 @@ class address_list(generics.ListAPIView):
 			sqlString = "SELECT id, ( 3959 * acos( cos( radians(" + locationParam[0] + ") ) * cos( radians( lat ) ) * cos( radians( long ) - radians("+locationParam[1]+") ) + sin( radians(" + locationParam[0] + ") ) * sin( radians( lat ) ) ) ) AS distance FROM webapp_address GROUP BY id HAVING ( 3959 * acos( cos( radians(" + locationParam[0] + ") ) * cos( radians( lat ) ) * cos( radians( long ) - radians(" + locationParam[1] + ") ) + sin( radians(" + locationParam[0] + ") ) * sin( radians( lat ) ) ) ) < "+distanceParam+";"
 			addresses = Address.objects.raw(sqlString)
 			# queryset = Address.objects.raw('SELECT id, ( 3959 * acos( cos( radians(37) ) * cos( radians( lat ) ) * cos( radians( long ) - radians(-122) ) + sin( radians(37) ) * sin( radians( lat ) ) ) ) AS distance FROM webapp_address HAVING distance < 25 ORDER BY distance;')
-		if business_type is not None:
+		if requestDate is not None:
+			# locations = BusinessLocation.objects.filter(availability__date__range=(requestDate,requestDate))
+			requestDateTime = dateutil.parser.parse(requestDate)
+			weekday = requestDateTime.isoweekday()
+			locations = BusinessLocation.objects.filter(open_hours__weekday = weekday , open_hours__from_hour__lte=requestDateTime.time, open_hours__to_hour__gte=requestDateTime.time)
+		if business_type is not None and business_type != 'none':
 			businesses = Business.objects.filter(business_type=business_type)
-			locations = BusinessLocation.objects.filter(business__in=businesses)
+			locations = locations.filter(business__in=businesses)
 			queryset = queryset.filter(business_location__in=locations)
 			queryset = queryset.filter(id__in=[o.id for o in addresses])
 			return list(queryset)
 		else:
-			return addresses	
+			queryset = queryset.filter(business_location__in=locations)
+			queryset = queryset.filter(id__in=[o.id for o in addresses])
+			return list(queryset)	
 			# queryset.filter(business_location=business_type)
 		
 

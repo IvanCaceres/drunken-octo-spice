@@ -10,6 +10,7 @@ admin.autodiscover()
 router = routers.DefaultRouter()
 router.register(r'users', views.UserView, 'list')
 router.register(r'appointments', views.AppointmentViewSet, 'detail')
+router.register(r'availability', views.AvailabilityViewSet, 'list')
 # routers.register(r'api/users/create/', views.EmailUserCreateViewset)
 
 # @api_view(('GET',))

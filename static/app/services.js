@@ -1,39 +1,62 @@
-var Services = angular.module('AppServices', ['ngResource']);
+var Services = angular.module('AppServices', ['djangoRESTResources']);
 
-Services.factory('BusinessTypes', function($resource){
+Services.factory('BusinessTypes', function(djResource){
     return {
       query: function() { 
-        return $resource('api/type', {}, {
+        return djResource('api/type/', {}, {
             query: {method:'GET', params:{format:'json'}, isArray:true}
     }).query();
      }
     }
   });
-Services.factory('Businesses', function($resource){
+Services.factory('Businesses', function(djResource){
     return {
       query: function() { 
-        return $resource('api/business', {}, {
+        return djResource('api/business/', {}, {
             query: {method:'GET', params:{format:'json'}, isArray:true}
     }).query();
      }
     }
   });
-Services.factory('CustomizerProperties', function($resource){
+Services.factory('CustomizerProperties', function(djResource){
     return {
     	query: function(furnituretypeID) { 
-    		return $resource('/api/properties/', {}, {
+    		return djResource('/api/properties/', {}, {
       			query: {method:'GET', params:{format:'json', furniture_type: furnituretypeID }, isArray:true}
     }).query();
      }
     }
   });
 
-Services.factory('Addresses', function($resource){
+Services.factory('Addresses', function(djResource){
     return {
-    	query: function(distanceParam, locationParam, businessTypeID) { 
-    		return $resource('/api/address', {}, {
-      			query: {method:'GET', params:{format:'json', business_type: businessTypeID, distance: distanceParam, location: locationParam }, isArray:true}
+    	query: function(distanceParam, locationParam, date, businessTypeID) { 
+    		return djResource('/api/address/', {}, {
+      			query: {method:'GET', params:{format:'json', business_type: businessTypeID||'none', distance: distanceParam, location: locationParam, date:date }, isArray:true}
     }).query();
+     }
+    }
+  });
+
+Services.factory('Availability', function(djResource){
+    return {
+      query: function(when, business_ids) { 
+        return djResource('/api/availability/', {}, {
+            query: {method:'GET', params:{format:'json', when: when, business_id: business_ids}, isArray:true}
+    }).query();
+     }
+    }
+  });
+Services.factory('Appointments', function(djResource){
+  var resourceErrorHandler = function(error){
+    console.log('AHHH ERROR')
+    console.log(error)
+  }
+    return {
+      post: function(business_location,services,when) { 
+        return djResource('api/appointments/', {}, {
+            post: {method:'POST', params:{}, isArray:true}
+    }).post({availability:9,business_location: business_location, services:services, when:when, service_recipient: 2});
      }
     }
   });
@@ -41,7 +64,7 @@ Services.factory('Addresses', function($resource){
 Services.factory('User', function() {
 	return {};
 });
-Services.factory('api', function($resource){
+Services.factory('api', function(djResource){
         function add_auth_header(data, headersGetter){
             // as per HTTP authentication spec [1], credentials must be
             // encoded in base64. Lets use window.btoa [2]
@@ -55,11 +78,11 @@ Services.factory('api', function($resource){
         // we tell Django not to [3]. This is a problem as the POST data cannot
         // be sent with the redirect. So we want Angular to not strip the slashes!
         return {
-            auth: $resource('/api/auth\\/', {}, {
+            auth: djResource('/api/auth\\/', {}, {
                 login: {method: 'POST', transformRequest: add_auth_header},
                 logout: {method: 'DELETE'}
             }),
-            users: $resource('/api/users\\/', {}, {
+            users: djResource('/api/users\\/', {}, {
                 create: {method: 'POST'}
             })
         };

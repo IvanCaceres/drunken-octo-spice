@@ -6,7 +6,7 @@ app.controller('HomeCtrl', ['$scope','BusinessTypes', function($scope,BusinessTy
 // alert('test!');
 $scope.types = BusinessTypes.query();
 $scope.radius = 5;
-$scope.types.$promise.then(function(result){
+$scope.types.$then(function(result){
   console.log(result)
 });
 $scope.selectSearchType = function (){
@@ -28,6 +28,7 @@ $scope.setSelected = function (searchType){
     User.address = $scope.address;
     User.radius = $scope.radius;
     User.businessType = $scope.businessType;
+    User.date = $scope.data.date;
       $state.go('stores');
   }
 }
@@ -35,16 +36,20 @@ $scope.isSelected = function(section) {
     return $scope.selected === section;
 }
 $scope.searchSubmit = function (location){
-  if($scope.address){
-    User.address = $scope.address;
     User.radius = $scope.radius;
     User.businessType = $scope.businessType;
+    console.log('DA SCOPE')
+    console.log($scope)
+    User.date = $scope.data.date;
+  if($scope.address){
+    User.address = $scope.address;
+
     $state.go('stores');
   } 
 }
 }]);
 
-app.controller('StoreMapCtrl', ['$scope','User', 'Addresses', function($scope, User, Addresses) {
+app.controller('StoreMapCtrl', ['$scope','User', 'Addresses', 'Availability', 'Appointments', function($scope, User, Addresses, Availability, Appointments) {
 console.log(User)
 var setup = function (addressBool){
 if(addressBool === true){
@@ -65,11 +70,63 @@ if(addressBool === true){
   //get stores from server
 var getStores = function(){ 
   User.businessType = User.businessType ? User.businessType.id : null;
-  $scope.businesses = Addresses.query(User.radius||5, $scope.coordinateString, User.businessType);
+  var formatDate = moment(User.date).format("YYYY-MM-DDTHH:mm")
+  $scope.businesses = Addresses.query(User.radius||5, $scope.coordinateString, formatDate, User.businessType);
  console.log($scope.coordinateString)
- $scope.businesses.$promise.then(function(result){
+ $scope.businesses.$then(function(result){
 console.log('got businesses!');
 console.log(result)
+    var businessIds = [];
+    for(var i=0;i<$scope.businesses.length;i++){
+      businessIds.push($scope.businesses[i].business_location.id);
+    }
+    businessIds = businessIds.join();
+    console.log(businessIds)
+    $scope.availabilities = Availability.query(formatDate, businessIds);
+    $scope.availabilities.$then(function(result){
+      console.log('RESULT')
+      console.log(result)
+      var availabilityHTMLObject = function (count,dateTime){
+        this.count = count;
+        this.date = dateTime;
+      };
+      availabilityHTMLObject.prototype.bookAppointment = function(business_location,services,when){
+        console.log('THIS')
+        console.log(this)
+        var $this = this;
+        var Booking = Appointments.post(business_location,services,when);
+        Booking.$then(function(result){
+          console.log('completed booking logging result')
+          console.log(result)
+          $this.count = $this.count-1;
+        }, function(error){
+          alert(error.data.detail)
+        });
+        
+        console.log(this)
+      };
+        if(result.data.length > 0){
+          for(var i=0;i<$scope.businesses.length;i++){
+            for(var y=0;y<result.data.length;y++){
+              if($scope.businesses[i].id == result.data[y].store){
+              $scope.businesses[i].available = [];
+              $scope.businesses[i].available.push(new availabilityHTMLObject(result.data[y].count,formatDate));
+              } 
+            }
+              if(!$scope.businesses[i].available){
+                $scope.businesses[i].available = [];
+                $scope.businesses[i].available.push(new availabilityHTMLObject($scope.businesses[i].business_location.default_availability,formatDate));
+              }
+          }
+        } else{
+          for(var i=0;i<$scope.businesses.length;i++){
+            $scope.businesses[i].available = [];
+            $scope.businesses[i].available.push(new availabilityHTMLObject($scope.businesses[i].business_location.default_availability,formatDate));
+          }
+        }
+        
+    });
+
 
 $scope.stores = [];
     for(var i=0; i < result.length;i++){
@@ -79,7 +136,8 @@ $scope.stores = [];
       console.log(storeId)
       var store = new storeLocator.Store(storeId, latLng, null, {
         title: business.business_location.business.business_name + ' - ' + business.business_location.location_name,
-        address: business.street + ', ' + business.city + ',' + business.state + ' ' + business.postal_code
+        address: business.street + ', ' + business.city + ',' + business.state + ' ' + business.postal_code,
+        features: '<button>Test</button>'
 
       });
       $scope.stores.push(store);

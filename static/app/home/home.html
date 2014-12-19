@@ -1,14 +1,33 @@
 
 <div class="home-container">
-	
 <div class="searchContainer" ng-controller="SearchCtrl">
+	<h3>Pick a day and set a time..</h3>
+        <div class="well">
+            <p>Formatted Date: {{ $parent.data.date | date:'medium' }}</p>
+
+            <div class="dropdown">
+                <a class="dropdown-toggle" id="dropdown2" role="button" data-toggle="dropdown" data-target="#"
+                   href="#">
+                    <div class="input-group">
+                        <input type="text" class="form-control" data-ng-model="$parent.data.date">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                    </div>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <datetimepicker data-ng-model="$parent.data.date"
+                                    data-datetimepicker-config="{ dropdownSelector: '#dropdown2', minView: 'hour' }"></datetimepicker>
+                </ul>
+            </div>
+        </div>
 <div class="searchFilters">
+	<h3>Tell us what you're looking for</h3>
 	<div class="filter businessType">
 		<select ng-model="businessType" ng-options="type.business_type for type in types">
 			<option value="">-- choose a business type --</option>
 		</select>
 	</div>
 	<div class="filter radius">
+	<h3>How far do you want it?</h3>
 	<form class="pure-form">
 	<label>Search Radius:</label>
 	<input type="text" ng-model="radius" value="5">
@@ -19,7 +38,8 @@
 	<label>miles</label>
 	</form>
 	</div>
-</div>	
+</div>
+<h3 style="line-height:30px;">Tell me where you are...<br>or i'll find out</h3>	
 <a class="pure-button pure-button-primary button-xlarge" ng-click="setSelected(searchTypes[0].name)" ng-class="{'neon-border' : isSelected(searchTypes[0].name)}">{{searchTypes[0].name}}</a>
 <div class="hrText">
 	<div class="bar">

@@ -1,3 +1,19 @@
 <p ng-show="geocodedResult" class="searched-address"><span>Search Address:</span> {{geocodedResult[0].formatted_address}}</p>
-<div id="panel"></div>
+<!-- <div id="panel"></div> -->
+<div id="stores">
+	<div class="store-container" ng-repeat="business in businesses">
+		<div class="title">{{business.business_location.business.business_name}} - {{business.business_location.location_name}}</div>
+		<div class="address">{{business.street}}, {{business.city}}, {{business.state}} {{business.postal_code}}</div>
+		
+		<div class="avbs">
+			<div class="avbContainer" ng-repeat="availability in business.available">
+				<button type="button" class="btn btn-primary btn-sm" ng-click="availability.bookAppointment($parent.business.business_location.id,[],availability.date)">
+					{{availability.date | date: 'h a'}}
+				</button>
+				<span>: {{availability.count}} left</span>
+			</div>	
+		</div>
+	</div>
+	
+</div>
 <div id="map-canvas"></div>
