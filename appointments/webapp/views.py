@@ -1,5 +1,5 @@
 from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, Availability
-from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, UserSerializer, AppointmentSerializer, AvailabilitySerializer
+from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, OldUserSerializer, UserSerializer, AppointmentSerializer, AvailabilitySerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -10,6 +10,7 @@ from geopy import distance
 from django.db import connection
 from django.contrib.auth import login, logout
 from authentication import QuietBasicAuthentication
+# from rest_framework.authentication import BasicAuthentication
 from django.contrib.auth.models import User
 from rest_framework import permissions
 from rest_framework.permissions import AllowAny
@@ -21,6 +22,7 @@ class ServiceRejected(APIException):
     default_detail = 'Service temporarily unavailable, try again later.'
 
 class UserView(viewsets.ModelViewSet):
+    queryset = User.objects.all()
     serializer_class = UserSerializer
     model = User
  
@@ -34,7 +36,7 @@ class AuthView(APIView):
  
     def post(self, request, *args, **kwargs):
         login(request, request.user)
-        return Response(UserSerializer(request.user).data)
+        return Response(OldUserSerializer(request.user).data)
  
     def delete(self, request, *args, **kwargs):
         logout(request)

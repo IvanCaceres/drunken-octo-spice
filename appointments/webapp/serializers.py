@@ -3,20 +3,42 @@ from rest_framework import serializers
 from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, OpeningHours, Availability
 from django.contrib.auth.models import User
  
+class OldUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'password', 'first_name',
+                  'last_name', 'email')
+        read_only_fields = ('id',)
+        write_only_fields = ('password',)
+
+    def restore_object(self, attrs, instance=None):
+        user = super(OldUserSerializer, self).restore_object(attrs, instance)
+        user.set_password(attrs['password'])
+        return user
  
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('id', 'username', 'password', 'first_name', 'last_name', 'email')
+        fields = ('id','username', 'password', 'first_name', 'last_name', 'email')
         read_only_fields = ('id',)
         write_only_fields = ('password',)
  
-    def restore_object(self, attrs, instance=None):
+    def create(self, validated_data):
+    	# self.validated_data['id'] = 100
         # call set_password on user object. Without this
         # the password will be stored in plain text.
-        user = super(UserSerializer, self).restore_object(attrs, instance)
-        user.set_password(attrs['password'])
+        password = validated_data.get('password', None)
+        user = super(UserSerializer, self).create(validated_data)
+        user.set_password(password)
+        user.save()
         return user
+    def update(self, instance, validated_data):
+        password = validated_data.get('password', None)
+        # call set_password on user object. Without this
+        # the password will be stored in plain text.
+        user = super(UserSerializer, self).update(validated_data, instance)
+        user.set_password(password)
+        return user    
 
 class BusinessTypeSerializer(serializers.ModelSerializer):
 	class Meta:

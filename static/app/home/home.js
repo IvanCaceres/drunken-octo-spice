@@ -25,11 +25,16 @@ $scope.setSelected = function (searchType){
 	// alert('dis b !');
 	$scope.selected = searchType;
   if(searchType == 'Detect Location'){
+    if($scope.data && $scope.data.date){
+
     User.address = $scope.address;
     User.radius = $scope.radius;
     User.businessType = $scope.businessType;
     User.date = $scope.data.date;
       $state.go('stores');
+    } else {
+      alert('you must select a date and time')
+    }
   }
 }
 $scope.isSelected = function(section) {
@@ -49,15 +54,11 @@ $scope.searchSubmit = function (location){
 }
 }]);
 
-app.controller('StoreMapCtrl', ['$scope','User', 'Addresses', 'Availability', 'Appointments', function($scope, User, Addresses, Availability, Appointments) {
+app.controller('StoreMapCtrl', ['$scope','User', 'Addresses', 'Availability', 'Appointments', '$http', 'reverseGeocode' , function($scope, User, Addresses, Availability, Appointments , $http, reverseGeocode) {
 console.log(User)
-var setup = function (addressBool){
-if(addressBool === true){
 
-} else {
 
-}
-}
+  
 
   var afterGeocoding = function (){
 
@@ -76,6 +77,7 @@ var getStores = function(){
  $scope.businesses.$then(function(result){
 console.log('got businesses!');
 console.log(result)
+
     var businessIds = [];
     for(var i=0;i<$scope.businesses.length;i++){
       businessIds.push($scope.businesses[i].business_location.id);
@@ -127,25 +129,27 @@ console.log(result)
         
     });
 
-
 $scope.stores = [];
-    for(var i=0; i < result.length;i++){
-      var business = result[i];
+    for(var i=0; i < result.data.length;i++){
+      var business = result.data[i];
+      console.log('logging business:')
+      console.log(business)
       var latLng = new google.maps.LatLng(business.lat, business.long);
       var storeId = business.business_location.slug;
       console.log(storeId)
       var store = new storeLocator.Store(storeId, latLng, null, {
         title: business.business_location.business.business_name + ' - ' + business.business_location.location_name,
-        address: business.street + ', ' + business.city + ',' + business.state + ' ' + business.postal_code,
-        features: '<button>Test</button>'
-
+        address: business.street + ', ' + business.city + ',' + business.state + ' ' + business.postal_code
       });
+      console.log('logging store:')
+      console.log(store)
       $scope.stores.push(store);
       view.createMarker(store);
     }
     data.setStores($scope.stores)
     console.log(data)
     view.refreshView();
+
  }); 
 }
 if(User.address){
@@ -159,8 +163,37 @@ if(User.address){
       // var pos = new google.maps.LatLng(position.coords.latitude,
       //                                  position.coords.longitude);
     console.log(position)
-      $scope.coordinateString = position.coords.latitude + ',' + position.coords.longitude;
+      $scope.coordinateString = position.coords.latitude + ', ' + position.coords.longitude;
       console.log($scope.coordinateString)
+      var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      var Geocoder = new google.maps.Geocoder;
+      Geocoder.geocode({
+      latLng: latlng
+    }, function(result){
+      console.log('reverse geocode was a success');
+      $scope.reverseGeocodedResult = result;
+      if(result.length >0){
+      for(var i =0; i < result.length;i++){
+        if(result[i].types[0] == 'neighborhood'){
+          var neighborhoodAddress = result[i].formatted_address;
+          break;
+          } 
+        }
+        $scope.formattedAddress = neighborhoodAddress || result[0].formatted_address;
+      }
+    });
+        // $scope.geocodedResult = reverseGeocode.query($scope.coordinateString)
+        // $scope.geocodedResult.$then(function(result){
+        //   console.log('logging reverse geocodedResult')
+        //   console.log(result.data)
+        // });
+    // $http.jsonp('https://maps.googleapis.com/maps/api/geocode/json?latlng='+$scope.coordinateString , {method:'JSONP', params : {callback : 'JSON_CALLBACK'}}).
+    // success(function(data, status, headers, config) {
+    //     //what do I do here?
+    // }).
+    // error(function(data, status, headers, config) {
+    //     $scope.error = true;
+    // });
       getStores();
     });
   }
@@ -260,14 +293,17 @@ app.controller('authController', ['$scope','api', function($scope, api) {
         $('#id_auth_form input').checkAndTriggerAutoFillEvent();
  
         $scope.getCredentials = function(){
+          console.log('running getCredentials')
+          alert($scope.username)
+            alert($scope.password)
             return {username: $scope.username, password: $scope.password};
+            
         };
  
         $scope.login = function(){
           console.log('running login function')
             api.auth.login($scope.getCredentials()).
-                $promise.
-                    then(function(data){
+                $then(function(data){
                       console.log(data)
                       console.log('triggered the then signalling data is good')
                         // on good username and password
@@ -276,6 +312,7 @@ app.controller('authController', ['$scope','api', function($scope, api) {
                     }).
                     catch(function(data){
                         // on incorrect username and password
+                        console.log(data)
                         alert(data.data.detail);
                     });
         };
@@ -290,8 +327,7 @@ app.controller('authController', ['$scope','api', function($scope, api) {
             $event.preventDefault();
             // create user and immediatly login on success
             api.users.create($scope.getCredentials()).
-                $promise.
-                    then($scope.login).
+                $then($scope.login).
                     catch(function(data){
                         alert(data.data.username);
                     });

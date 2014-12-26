@@ -147,6 +147,7 @@ color: white;
 	border:none;
 }
 #map-canvas {
+	float: right;
 	width: 600px;
 }
 #stores{
@@ -174,4 +175,7 @@ color: white;
 	font-size: 80%;
 	margin-top: 0.2em;
 	margin-bottom: 0.5em;
+}
+#panel {
+	display: none;
 }

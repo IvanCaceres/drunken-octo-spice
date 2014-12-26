@@ -47,6 +47,15 @@ Services.factory('Availability', function(djResource){
      }
     }
   });
+Services.factory('reverseGeocode', function(djResource){
+    return {
+      query: function(latlng) { 
+        return djResource('https://maps.googleapis.com/maps/api/geocode/json', {}, {
+            query: {method:'JSONP', params:{latlng:latlng, callback:'JSON_CALLBACK'}, isArray:false}
+    }).query();
+     }
+    }
+  });
 Services.factory('Appointments', function(djResource){
   var resourceErrorHandler = function(error){
     console.log('AHHH ERROR')
@@ -66,11 +75,14 @@ Services.factory('User', function() {
 });
 Services.factory('api', function(djResource){
         function add_auth_header(data, headersGetter){
+          console.log('auth header data')
+          console.log(data)
             // as per HTTP authentication spec [1], credentials must be
             // encoded in base64. Lets use window.btoa [2]
             var headers = headersGetter();
             headers['Authorization'] = ('Basic ' + btoa(data.username +
                                         ':' + data.password));
+            console.log(headers)
         }
         // defining the endpoints. Note we escape url trailing dashes: Angular
         // strips unescaped trailing slashes. Problem as Django redirects urls
@@ -78,11 +90,11 @@ Services.factory('api', function(djResource){
         // we tell Django not to [3]. This is a problem as the POST data cannot
         // be sent with the redirect. So we want Angular to not strip the slashes!
         return {
-            auth: djResource('/api/auth\\/', {}, {
+            auth: djResource('/api/auth/', {}, {
                 login: {method: 'POST', transformRequest: add_auth_header},
                 logout: {method: 'DELETE'}
             }),
-            users: djResource('/api/users\\/', {}, {
+            users: djResource('/api/users/', {}, {
                 create: {method: 'POST'}
             })
         };

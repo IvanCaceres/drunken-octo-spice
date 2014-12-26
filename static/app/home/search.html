@@ -1,5 +1,6 @@
 <p ng-show="geocodedResult" class="searched-address"><span>Search Address:</span> {{geocodedResult[0].formatted_address}}</p>
-<!-- <div id="panel"></div> -->
+<p ng-show="formattedAddress" class="searched-address"><span>Search Address:</span> {{formattedAddress}}</p>
+<div id="panel"></div>
 <div id="stores">
 	<div class="store-container" ng-repeat="business in businesses">
 		<div class="title">{{business.business_location.business.business_name}} - {{business.business_location.location_name}}</div>
