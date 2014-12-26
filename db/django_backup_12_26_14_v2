@@ -1,0 +1,2186 @@
+--
+-- PostgreSQL database dump
+--
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SET check_function_bodies = false;
+SET client_min_messages = warning;
+
+--
+-- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: 
+--
+
+CREATE EXTENSION IF NOT EXISTS plpgsql WITH SCHEMA pg_catalog;
+
+
+--
+-- Name: EXTENSION plpgsql; Type: COMMENT; Schema: -; Owner: 
+--
+
+COMMENT ON EXTENSION plpgsql IS 'PL/pgSQL procedural language';
+
+
+SET search_path = public, pg_catalog;
+
+SET default_tablespace = '';
+
+SET default_with_oids = false;
+
+--
+-- Name: auth_group; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE auth_group (
+    id integer NOT NULL,
+    name character varying(80) NOT NULL
+);
+
+
+ALTER TABLE public.auth_group OWNER TO django;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE auth_group_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_id_seq OWNER TO django;
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE auth_group_id_seq OWNED BY auth_group.id;
+
+
+--
+-- Name: auth_group_permissions; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE auth_group_permissions (
+    id integer NOT NULL,
+    group_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_group_permissions OWNER TO django;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE auth_group_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_group_permissions_id_seq OWNER TO django;
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE auth_group_permissions_id_seq OWNED BY auth_group_permissions.id;
+
+
+--
+-- Name: auth_permission; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE auth_permission (
+    id integer NOT NULL,
+    name character varying(50) NOT NULL,
+    content_type_id integer NOT NULL,
+    codename character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.auth_permission OWNER TO django;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE auth_permission_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_permission_id_seq OWNER TO django;
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE auth_permission_id_seq OWNED BY auth_permission.id;
+
+
+--
+-- Name: auth_user; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE auth_user (
+    id integer NOT NULL,
+    password character varying(128) NOT NULL,
+    last_login timestamp with time zone NOT NULL,
+    is_superuser boolean NOT NULL,
+    username character varying(30) NOT NULL,
+    first_name character varying(30) NOT NULL,
+    last_name character varying(30) NOT NULL,
+    email character varying(75) NOT NULL,
+    is_staff boolean NOT NULL,
+    is_active boolean NOT NULL,
+    date_joined timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.auth_user OWNER TO django;
+
+--
+-- Name: auth_user_groups; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE auth_user_groups (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    group_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_groups OWNER TO django;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE auth_user_groups_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_groups_id_seq OWNER TO django;
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE auth_user_groups_id_seq OWNED BY auth_user_groups.id;
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE auth_user_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_id_seq OWNER TO django;
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE auth_user_id_seq OWNED BY auth_user.id;
+
+
+--
+-- Name: auth_user_user_permissions; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE auth_user_user_permissions (
+    id integer NOT NULL,
+    user_id integer NOT NULL,
+    permission_id integer NOT NULL
+);
+
+
+ALTER TABLE public.auth_user_user_permissions OWNER TO django;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE auth_user_user_permissions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.auth_user_user_permissions_id_seq OWNER TO django;
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE auth_user_user_permissions_id_seq OWNED BY auth_user_user_permissions.id;
+
+
+--
+-- Name: django_admin_log; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE django_admin_log (
+    id integer NOT NULL,
+    action_time timestamp with time zone NOT NULL,
+    user_id integer NOT NULL,
+    content_type_id integer,
+    object_id text,
+    object_repr character varying(200) NOT NULL,
+    action_flag smallint NOT NULL,
+    change_message text NOT NULL,
+    CONSTRAINT django_admin_log_action_flag_check CHECK ((action_flag >= 0))
+);
+
+
+ALTER TABLE public.django_admin_log OWNER TO django;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE django_admin_log_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_admin_log_id_seq OWNER TO django;
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE django_admin_log_id_seq OWNED BY django_admin_log.id;
+
+
+--
+-- Name: django_content_type; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE django_content_type (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    app_label character varying(100) NOT NULL,
+    model character varying(100) NOT NULL
+);
+
+
+ALTER TABLE public.django_content_type OWNER TO django;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE django_content_type_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_content_type_id_seq OWNER TO django;
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE django_content_type_id_seq OWNED BY django_content_type.id;
+
+
+--
+-- Name: django_migrations; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE django_migrations (
+    id integer NOT NULL,
+    app character varying(255) NOT NULL,
+    name character varying(255) NOT NULL,
+    applied timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_migrations OWNER TO django;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE django_migrations_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.django_migrations_id_seq OWNER TO django;
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE django_migrations_id_seq OWNED BY django_migrations.id;
+
+
+--
+-- Name: django_session; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE django_session (
+    session_key character varying(40) NOT NULL,
+    session_data text NOT NULL,
+    expire_date timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE public.django_session OWNER TO django;
+
+--
+-- Name: webapp_address; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_address (
+    id integer NOT NULL,
+    street character varying(100) NOT NULL,
+    city character varying(100) NOT NULL,
+    state character varying(40) NOT NULL,
+    postal_code character varying(20) NOT NULL,
+    lat numeric(10,6),
+    long numeric(10,6),
+    business_location_id integer
+);
+
+
+ALTER TABLE public.webapp_address OWNER TO django;
+
+--
+-- Name: webapp_address_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_address_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_address_id_seq OWNER TO django;
+
+--
+-- Name: webapp_address_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_address_id_seq OWNED BY webapp_address.id;
+
+
+--
+-- Name: webapp_appointment; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_appointment (
+    id integer NOT NULL,
+    completed boolean NOT NULL,
+    business_location_id integer NOT NULL,
+    service_recipient_id integer NOT NULL,
+    "when" timestamp with time zone NOT NULL,
+    availability_id integer NOT NULL
+);
+
+
+ALTER TABLE public.webapp_appointment OWNER TO django;
+
+--
+-- Name: webapp_appointment_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_appointment_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_appointment_id_seq OWNER TO django;
+
+--
+-- Name: webapp_appointment_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_appointment_id_seq OWNED BY webapp_appointment.id;
+
+
+--
+-- Name: webapp_appointment_services; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_appointment_services (
+    id integer NOT NULL,
+    appointment_id integer NOT NULL,
+    service_id integer NOT NULL
+);
+
+
+ALTER TABLE public.webapp_appointment_services OWNER TO django;
+
+--
+-- Name: webapp_appointment_services_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_appointment_services_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_appointment_services_id_seq OWNER TO django;
+
+--
+-- Name: webapp_appointment_services_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_appointment_services_id_seq OWNED BY webapp_appointment_services.id;
+
+
+--
+-- Name: webapp_availability; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_availability (
+    id integer NOT NULL,
+    count integer NOT NULL,
+    date timestamp with time zone,
+    store_id integer NOT NULL
+);
+
+
+ALTER TABLE public.webapp_availability OWNER TO django;
+
+--
+-- Name: webapp_availability_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_availability_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_availability_id_seq OWNER TO django;
+
+--
+-- Name: webapp_availability_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_availability_id_seq OWNED BY webapp_availability.id;
+
+
+--
+-- Name: webapp_business; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_business (
+    id integer NOT NULL,
+    business_name character varying(200) NOT NULL,
+    description text NOT NULL,
+    publication_status boolean NOT NULL,
+    payment_status boolean NOT NULL,
+    business_type_id integer NOT NULL,
+    registered_by_id integer NOT NULL,
+    subscription_tier_id integer NOT NULL
+);
+
+
+ALTER TABLE public.webapp_business OWNER TO django;
+
+--
+-- Name: webapp_business_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_business_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_business_id_seq OWNER TO django;
+
+--
+-- Name: webapp_business_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_business_id_seq OWNED BY webapp_business.id;
+
+
+--
+-- Name: webapp_businesslocation; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_businesslocation (
+    id integer NOT NULL,
+    location_name character varying(100) NOT NULL,
+    description text NOT NULL,
+    business_id integer NOT NULL,
+    slug character varying(30),
+    default_availability integer NOT NULL
+);
+
+
+ALTER TABLE public.webapp_businesslocation OWNER TO django;
+
+--
+-- Name: webapp_businesslocation_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_businesslocation_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_businesslocation_id_seq OWNER TO django;
+
+--
+-- Name: webapp_businesslocation_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_businesslocation_id_seq OWNED BY webapp_businesslocation.id;
+
+
+--
+-- Name: webapp_businesstype; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_businesstype (
+    id integer NOT NULL,
+    business_type character varying(40) NOT NULL
+);
+
+
+ALTER TABLE public.webapp_businesstype OWNER TO django;
+
+--
+-- Name: webapp_businesstype_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_businesstype_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_businesstype_id_seq OWNER TO django;
+
+--
+-- Name: webapp_businesstype_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_businesstype_id_seq OWNED BY webapp_businesstype.id;
+
+
+--
+-- Name: webapp_openinghours; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_openinghours (
+    id integer NOT NULL,
+    weekday integer NOT NULL,
+    from_hour time without time zone NOT NULL,
+    to_hour time without time zone NOT NULL,
+    store_id integer NOT NULL
+);
+
+
+ALTER TABLE public.webapp_openinghours OWNER TO django;
+
+--
+-- Name: webapp_openinghours_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_openinghours_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_openinghours_id_seq OWNER TO django;
+
+--
+-- Name: webapp_openinghours_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_openinghours_id_seq OWNED BY webapp_openinghours.id;
+
+
+--
+-- Name: webapp_review; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_review (
+    id integer NOT NULL,
+    review text NOT NULL,
+    appointment_id integer NOT NULL,
+    author_id integer NOT NULL
+);
+
+
+ALTER TABLE public.webapp_review OWNER TO django;
+
+--
+-- Name: webapp_review_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_review_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_review_id_seq OWNER TO django;
+
+--
+-- Name: webapp_review_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_review_id_seq OWNED BY webapp_review.id;
+
+
+--
+-- Name: webapp_service; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_service (
+    id integer NOT NULL,
+    name character varying(100) NOT NULL,
+    description text NOT NULL,
+    price_estimate numeric(10,2),
+    business_location_id integer NOT NULL
+);
+
+
+ALTER TABLE public.webapp_service OWNER TO django;
+
+--
+-- Name: webapp_service_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_service_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_service_id_seq OWNER TO django;
+
+--
+-- Name: webapp_service_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_service_id_seq OWNED BY webapp_service.id;
+
+
+--
+-- Name: webapp_subscriptiontier; Type: TABLE; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE TABLE webapp_subscriptiontier (
+    id integer NOT NULL,
+    tier_name character varying(100) NOT NULL,
+    cost numeric(10,2)
+);
+
+
+ALTER TABLE public.webapp_subscriptiontier OWNER TO django;
+
+--
+-- Name: webapp_subscriptiontier_id_seq; Type: SEQUENCE; Schema: public; Owner: django
+--
+
+CREATE SEQUENCE webapp_subscriptiontier_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.webapp_subscriptiontier_id_seq OWNER TO django;
+
+--
+-- Name: webapp_subscriptiontier_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: django
+--
+
+ALTER SEQUENCE webapp_subscriptiontier_id_seq OWNED BY webapp_subscriptiontier.id;
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_group ALTER COLUMN id SET DEFAULT nextval('auth_group_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_group_permissions ALTER COLUMN id SET DEFAULT nextval('auth_group_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_permission ALTER COLUMN id SET DEFAULT nextval('auth_permission_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_user ALTER COLUMN id SET DEFAULT nextval('auth_user_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_user_groups ALTER COLUMN id SET DEFAULT nextval('auth_user_groups_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_user_user_permissions ALTER COLUMN id SET DEFAULT nextval('auth_user_user_permissions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY django_admin_log ALTER COLUMN id SET DEFAULT nextval('django_admin_log_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY django_content_type ALTER COLUMN id SET DEFAULT nextval('django_content_type_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY django_migrations ALTER COLUMN id SET DEFAULT nextval('django_migrations_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_address ALTER COLUMN id SET DEFAULT nextval('webapp_address_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_appointment ALTER COLUMN id SET DEFAULT nextval('webapp_appointment_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_appointment_services ALTER COLUMN id SET DEFAULT nextval('webapp_appointment_services_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_availability ALTER COLUMN id SET DEFAULT nextval('webapp_availability_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_business ALTER COLUMN id SET DEFAULT nextval('webapp_business_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_businesslocation ALTER COLUMN id SET DEFAULT nextval('webapp_businesslocation_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_businesstype ALTER COLUMN id SET DEFAULT nextval('webapp_businesstype_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_openinghours ALTER COLUMN id SET DEFAULT nextval('webapp_openinghours_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_review ALTER COLUMN id SET DEFAULT nextval('webapp_review_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_service ALTER COLUMN id SET DEFAULT nextval('webapp_service_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_subscriptiontier ALTER COLUMN id SET DEFAULT nextval('webapp_subscriptiontier_id_seq'::regclass);
+
+
+--
+-- Data for Name: auth_group; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY auth_group (id, name) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('auth_group_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_group_permissions; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY auth_group_permissions (id, group_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_group_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('auth_group_permissions_id_seq', 1, false);
+
+
+--
+-- Data for Name: auth_permission; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY auth_permission (id, name, content_type_id, codename) FROM stdin;
+1	Can add log entry	1	add_logentry
+2	Can change log entry	1	change_logentry
+3	Can delete log entry	1	delete_logentry
+4	Can add permission	2	add_permission
+5	Can change permission	2	change_permission
+6	Can delete permission	2	delete_permission
+7	Can add group	3	add_group
+8	Can change group	3	change_group
+9	Can delete group	3	delete_group
+10	Can add user	4	add_user
+11	Can change user	4	change_user
+12	Can delete user	4	delete_user
+13	Can add content type	5	add_contenttype
+14	Can change content type	5	change_contenttype
+15	Can delete content type	5	delete_contenttype
+16	Can add session	6	add_session
+17	Can change session	6	change_session
+18	Can delete session	6	delete_session
+19	Can add address	7	add_address
+20	Can change address	7	change_address
+21	Can delete address	7	delete_address
+22	Can add subscription tier	8	add_subscriptiontier
+23	Can change subscription tier	8	change_subscriptiontier
+24	Can delete subscription tier	8	delete_subscriptiontier
+25	Can add business type	9	add_businesstype
+26	Can change business type	9	change_businesstype
+27	Can delete business type	9	delete_businesstype
+28	Can add business	10	add_business
+29	Can change business	10	change_business
+30	Can delete business	10	delete_business
+31	Can add business location	11	add_businesslocation
+32	Can change business location	11	change_businesslocation
+33	Can delete business location	11	delete_businesslocation
+34	Can add service	12	add_service
+35	Can change service	12	change_service
+36	Can delete service	12	delete_service
+37	Can add appointment	13	add_appointment
+38	Can change appointment	13	change_appointment
+39	Can delete appointment	13	delete_appointment
+40	Can add review	14	add_review
+41	Can change review	14	change_review
+42	Can delete review	14	delete_review
+43	Can add opening hours	15	add_openinghours
+44	Can change opening hours	15	change_openinghours
+45	Can delete opening hours	15	delete_openinghours
+46	Can add availability	16	add_availability
+47	Can change availability	16	change_availability
+48	Can delete availability	16	delete_availability
+\.
+
+
+--
+-- Name: auth_permission_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('auth_permission_id_seq', 48, true);
+
+
+--
+-- Data for Name: auth_user; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY auth_user (id, password, last_login, is_superuser, username, first_name, last_name, email, is_staff, is_active, date_joined) FROM stdin;
+11	pbkdf2_sha256$12000$Cz3Vl2jsk43S$Z/ZedYsEnxAr5jiwyIhIl9NYDwJWlo1mC4FkArVO2VE=	2014-12-21 14:29:59.139159-05	f	user01				f	t	2014-12-01 19:04:31.823064-05
+12	pbkdf2_sha256$12000$31n7zZtUsTJd$Ws22pZATvwFnKxjixGyOwG0Y0GBP66Rvl9KdPN8fvV4=	2014-12-14 14:46:25.369359-05	f	apitest				f	t	2014-12-13 21:22:31.195405-05
+17	pbkdf2_sha256$12000$bWRO52vckhZ4$+qo0tkT3cCS2a+DtVDL4FI0H12NXUdbDywiKN7EIScQ=	2014-12-21 14:31:03.504375-05	f	ed				f	t	2014-12-21 14:30:51.363625-05
+18	123	2014-12-21 14:42:41.83094-05	f	dreads				f	t	2014-12-21 14:42:41.831073-05
+100	tester123	2014-12-21 13:08:08.076219-05	f	chiefkeef				f	t	2014-12-21 13:08:08.076275-05
+13	tester123	2014-12-21 13:09:42.930627-05	f	heyguytest				f	t	2014-12-21 13:09:42.930732-05
+14	tester123	2014-12-21 13:10:27.170664-05	f	zebrakeef				f	t	2014-12-21 13:10:27.170798-05
+15	pbkdf2_sha256$12000$PTXfiGQGi1Cc$bEOR+Rhj//W5xn8NwcuOdsJ009UPWUOqk6oyhV+o660=	2014-12-21 14:49:02.82081-05	t	dk				t	t	2014-12-21 13:20:05-05
+19	tester123	2014-12-21 15:05:09.743989-05	f	sosa23				f	t	2014-12-21 15:05:09.744078-05
+20	123	2014-12-21 15:06:54.609357-05	f	sosa24				f	t	2014-12-21 15:06:54.60954-05
+21	123	2014-12-21 15:07:58.430248-05	f	sosa25				f	t	2014-12-21 15:07:58.430314-05
+22	test	2014-12-21 15:13:46.746177-05	f	sosaa				f	t	2014-12-21 15:13:46.746339-05
+23	test	2014-12-21 15:14:32.549359-05	f	xs				f	t	2014-12-21 15:14:32.54959-05
+24	123	2014-12-21 15:18:18.445612-05	f	test45				f	t	2014-12-21 15:18:18.445731-05
+2	pbkdf2_sha256$12000$m7vDotu2yMgp$esd02pKV4aXZYlzjzm9XFCKehhZOOjUaFY244+4W1/0=	2014-11-30 16:10:25.781107-05	f					f	t	2014-11-30 16:10:25.781246-05
+25	pbkdf2_sha256$12000$WDxfZvoUhuhe$FhwjOfao348ICmXJDI0wxrcKmF7nw6FhWXArpK7gcHA=	2014-12-21 15:21:59.233592-05	f	sosa77				f	t	2014-12-21 15:21:58.179535-05
+9	pbkdf2_sha256$12000$jnemCG2NU9I8$a8u/0RBI/JjvwFgxzwlDgbeXYii/uZFGDpGcxxv8+hs=	2014-11-30 16:40:58.361056-05	f	zebrasdxcvc				f	t	2014-11-30 16:40:58.027294-05
+10	pbkdf2_sha256$12000$DnHMrFjnTMZI$AiFYWE56D1ty/rqRPFIfRK5yyz8ydeKi3UQGxwITfLU=	2014-12-01 14:03:17.342713-05	f	zebrasparading				f	t	2014-11-30 16:53:49.426516-05
+26	pbkdf2_sha256$12000$CjoRURvpVxcA$28FgxNV5fqLBjnMwmj80ESBNa1kstfqZzOVmalDprBQ=	2014-12-21 16:09:43.793471-05	f	mike409				f	t	2014-12-21 16:09:42.626862-05
+1	pbkdf2_sha256$12000$VOHHzYWH8xdr$8KPYtbg9vuk75PooqL92U4Tvk4BnXh2yPA15Jo1PF5c=	2014-12-21 16:10:04.227001-05	t	admin			ivanny109@gmail.com	t	t	2014-10-19 01:33:22.685248-04
+16	tester123	2014-12-21 14:25:19.557147-05	f	chiefinkeef				f	t	2014-12-21 14:25:19.557263-05
+\.
+
+
+--
+-- Data for Name: auth_user_groups; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY auth_user_groups (id, user_id, group_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_groups_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('auth_user_groups_id_seq', 1, false);
+
+
+--
+-- Name: auth_user_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('auth_user_id_seq', 26, true);
+
+
+--
+-- Data for Name: auth_user_user_permissions; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY auth_user_user_permissions (id, user_id, permission_id) FROM stdin;
+\.
+
+
+--
+-- Name: auth_user_user_permissions_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('auth_user_user_permissions_id_seq', 61, true);
+
+
+--
+-- Data for Name: django_admin_log; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY django_admin_log (id, action_time, user_id, content_type_id, object_id, object_repr, action_flag, change_message) FROM stdin;
+1	2014-10-19 01:59:33.46715-04	1	9	1	BusinessType object	1	
+2	2014-10-19 02:09:50.417825-04	1	7	1	Address object	1	
+3	2014-10-19 02:15:43.438181-04	1	8	1	SubscriptionTier object	1	
+4	2014-10-19 02:16:24.827417-04	1	10	1	Business object	1	
+5	2014-10-19 02:17:12.000291-04	1	12	1	Service object	1	
+6	2014-10-19 02:17:42.757265-04	1	12	2	Service object	1	
+7	2014-10-19 02:18:57.229556-04	1	13	1	Appointment object	1	
+8	2014-10-19 17:08:19.755929-04	1	9	2	Medical Care	1	
+9	2014-10-19 17:09:58.129275-04	1	8	2	Tier 1	1	
+10	2014-11-03 19:51:12.49129-05	1	7	1	22 E 109TH ST	2	Changed business_location, lat and long.
+11	2014-11-03 21:53:56.768758-05	1	11	1	East Harlem	2	Changed slug.
+12	2014-11-03 22:21:17.57699-05	1	7	1	22 E 109TH ST	2	Changed lat and long.
+13	2014-11-03 23:11:44.382887-05	1	10	2	Prestige Auto	1	
+14	2014-11-03 23:12:35.61974-05	1	7	2	2013 3rd Ave	1	
+15	2014-11-04 19:44:26.002783-05	1	10	3	AAA	1	
+16	2014-11-04 19:47:46.126693-05	1	7	3	100 Hopmeadow Street	1	
+17	2014-11-16 10:43:51.408555-05	1	10	4	CityMD	1	
+18	2014-11-16 10:50:48.170536-05	1	7	4	336 E 86TH ST	1	
+19	2014-12-14 13:19:16.069609-05	1	13	21	apitest  -  2014-12-22 05:00:00+00:00  -  NYC	1	
+20	2014-12-14 14:33:49.660279-05	1	13	22	admin	1	
+21	2014-12-14 14:42:00.277116-05	1	13	23	apitest	1	
+22	2014-12-14 14:42:10.321056-05	1	13	23	apitest	2	Changed time.
+23	2014-12-14 14:58:08.483146-05	1	13	1	admin	2	Changed time.
+24	2014-12-14 15:22:09.13208-05	1	13	24	admin	1	
+25	2014-12-14 15:22:26.595474-05	1	13	23	apitest	2	Changed when.
+26	2014-12-14 17:49:26.952568-05	1	13	22	admin	3	
+27	2014-12-14 17:49:26.960085-05	1	13	21	apitest	3	
+28	2014-12-14 17:49:26.963685-05	1	13	20	admin	3	
+29	2014-12-14 17:49:26.966441-05	1	13	19	admin	3	
+30	2014-12-14 17:49:26.969042-05	1	13	18	zebrasparading	3	
+31	2014-12-14 17:49:26.971744-05	1	13	17	apitest	3	
+32	2014-12-14 17:49:26.974376-05	1	13	16	apitest	3	
+33	2014-12-14 17:49:26.976755-05	1	13	15	apitest	3	
+34	2014-12-14 17:49:26.979117-05	1	13	14	apitest	3	
+35	2014-12-14 17:49:59.264784-05	1	13	13	apitest	3	
+36	2014-12-14 17:49:59.27043-05	1	13	12	admin	3	
+37	2014-12-14 17:49:59.273307-05	1	13	11	user01	3	
+38	2014-12-14 17:49:59.276103-05	1	13	10	user01	3	
+39	2014-12-14 17:49:59.279069-05	1	13	9	user01	3	
+40	2014-12-14 17:49:59.282574-05	1	13	8	user01	3	
+41	2014-12-14 17:49:59.285883-05	1	13	7	zebrasparading	3	
+42	2014-12-14 17:49:59.288469-05	1	13	6	zebrasparading	3	
+43	2014-12-14 17:49:59.291577-05	1	13	5	zebrasparading	3	
+44	2014-12-14 17:49:59.295067-05	1	13	4	zebrasparading	3	
+45	2014-12-14 17:49:59.298735-05	1	13	3	user01	3	
+46	2014-12-14 17:49:59.301975-05	1	13	2	user01	3	
+47	2014-12-14 17:49:59.304541-05	1	13	1	admin	3	
+48	2014-12-15 19:30:45.962387-05	1	15	1	OpeningHours object	1	
+49	2014-12-15 19:30:53.111778-05	1	15	1	OpeningHours object	2	No fields changed.
+50	2014-12-15 19:31:14.748498-05	1	15	2	OpeningHours object	1	
+51	2014-12-15 19:41:05.764176-05	1	15	2	OpeningHours object	3	
+52	2014-12-15 19:41:09.431709-05	1	15	1	OpeningHours object	3	
+53	2014-12-15 19:41:52.922488-05	1	15	3	OpeningHours object	1	
+54	2014-12-15 19:41:59.072839-05	1	15	3	OpeningHours object	2	No fields changed.
+55	2014-12-15 19:42:04.124453-05	1	15	3	OpeningHours object	2	No fields changed.
+56	2014-12-15 19:42:31.615344-05	1	15	4	OpeningHours object	1	
+57	2014-12-15 19:59:39.815213-05	1	15	4	OpeningHours object	2	Changed store.
+58	2014-12-15 20:14:14.386852-05	1	15	4	OpeningHours object	2	No fields changed.
+59	2014-12-15 20:14:19.173023-05	1	15	4	OpeningHours object	3	
+60	2014-12-15 20:14:44.907055-05	1	15	5	OpeningHours object	1	
+61	2014-12-15 20:16:51.368315-05	1	15	5	OpeningHours object	2	Changed store.
+62	2014-12-15 20:16:57.221541-05	1	15	5	OpeningHours object	2	Changed weekday.
+63	2014-12-15 20:17:02.1002-05	1	15	5	OpeningHours object	2	Changed weekday.
+64	2014-12-15 20:20:27.574687-05	1	15	5	OpeningHours object	2	No fields changed.
+65	2014-12-15 20:20:32.238016-05	1	15	5	OpeningHours object	2	Changed weekday.
+66	2014-12-15 20:21:53.274406-05	1	15	5	OpeningHours object	2	Changed weekday.
+67	2014-12-15 20:22:00.01943-05	1	15	3	OpeningHours object	2	Changed weekday.
+68	2014-12-15 20:22:06.257321-05	1	15	5	OpeningHours object	2	Changed weekday.
+69	2014-12-15 20:22:27.368589-05	1	15	3	OpeningHours object	2	Changed weekday.
+70	2014-12-15 20:22:30.966688-05	1	15	3	OpeningHours object	2	Changed store and weekday.
+71	2014-12-16 16:21:42.267727-05	1	16	1	Availability object	1	
+72	2014-12-16 17:51:36.360219-05	1	16	2	Availability object	1	
+73	2014-12-17 23:41:04.208256-05	1	16	3	Availability object	1	
+74	2014-12-18 13:48:56.160357-05	1	16	4	Availability object	1	
+75	2014-12-18 15:12:27.561397-05	1	13	65	admin	3	
+76	2014-12-18 15:12:27.568337-05	1	13	64	admin	3	
+77	2014-12-18 15:12:27.572184-05	1	13	63	admin	3	
+78	2014-12-18 15:12:27.574978-05	1	13	62	admin	3	
+79	2014-12-18 15:12:27.577617-05	1	13	61	zebrasparading	3	
+80	2014-12-18 15:12:27.580293-05	1	13	60	user01	3	
+81	2014-12-18 15:12:27.582837-05	1	13	59	user01	3	
+82	2014-12-18 15:12:27.585269-05	1	13	58	user01	3	
+83	2014-12-18 15:12:27.587614-05	1	13	57	user01	3	
+84	2014-12-18 15:12:27.590011-05	1	13	56	user01	3	
+85	2014-12-18 15:12:27.592417-05	1	13	55	user01	3	
+86	2014-12-18 15:12:27.59474-05	1	13	54	user01	3	
+87	2014-12-18 15:12:27.59707-05	1	13	53	user01	3	
+88	2014-12-18 15:12:27.599381-05	1	13	52	user01	3	
+89	2014-12-18 15:12:27.601782-05	1	13	51	user01	3	
+90	2014-12-18 15:12:27.604201-05	1	13	50	user01	3	
+91	2014-12-18 15:12:27.60671-05	1	13	49	user01	3	
+92	2014-12-18 15:12:27.609664-05	1	13	48	user01	3	
+93	2014-12-18 15:12:27.612234-05	1	13	47	user01	3	
+94	2014-12-18 15:12:27.615202-05	1	13	46	user01	3	
+95	2014-12-18 15:12:27.618019-05	1	13	45	user01	3	
+96	2014-12-18 15:12:27.620551-05	1	13	44	user01	3	
+97	2014-12-18 15:12:27.623051-05	1	13	43	user01	3	
+98	2014-12-18 15:12:27.625467-05	1	13	42	user01	3	
+99	2014-12-18 15:12:27.627995-05	1	13	41	user01	3	
+100	2014-12-18 15:12:27.630371-05	1	13	40	user01	3	
+101	2014-12-18 15:12:27.633071-05	1	13	39	user01	3	
+102	2014-12-18 15:12:27.635464-05	1	13	38	admin	3	
+103	2014-12-18 15:12:27.637808-05	1	13	37	admin	3	
+104	2014-12-18 15:12:27.640236-05	1	13	36	admin	3	
+105	2014-12-18 15:12:27.642716-05	1	13	35	admin	3	
+106	2014-12-18 15:12:27.645019-05	1	13	34	admin	3	
+107	2014-12-18 15:12:27.648118-05	1	13	33	admin	3	
+108	2014-12-18 15:12:27.650572-05	1	13	32	admin	3	
+109	2014-12-18 15:12:27.65324-05	1	13	31	admin	3	
+110	2014-12-18 15:12:27.656336-05	1	13	30	admin	3	
+111	2014-12-18 15:12:27.658758-05	1	13	29	admin	3	
+112	2014-12-18 15:12:27.661134-05	1	13	28	admin	3	
+113	2014-12-18 15:12:27.663459-05	1	13	27	admin	3	
+114	2014-12-18 15:12:27.6658-05	1	13	26	admin	3	
+115	2014-12-18 15:12:27.668217-05	1	13	25	admin	3	
+116	2014-12-18 15:12:27.670623-05	1	13	24	admin	3	
+117	2014-12-18 15:12:27.672955-05	1	13	23	apitest	3	
+118	2014-12-18 19:41:24.792324-05	1	16	8	Availability object	3	
+119	2014-12-18 19:41:24.796742-05	1	16	7	Availability object	3	
+120	2014-12-18 19:41:24.800014-05	1	16	6	Availability object	3	
+121	2014-12-18 19:41:24.802059-05	1	16	5	Availability object	3	
+122	2014-12-18 19:41:24.804301-05	1	16	4	Availability object	3	
+123	2014-12-18 19:41:24.807266-05	1	16	3	Availability object	3	
+124	2014-12-18 19:41:24.809949-05	1	16	2	Availability object	3	
+125	2014-12-18 19:41:24.812582-05	1	16	1	Availability object	3	
+126	2014-12-18 19:41:59.315341-05	1	16	9	Availability object	1	
+127	2014-12-18 20:18:08.256932-05	1	15	3	OpeningHours object	2	No fields changed.
+128	2014-12-18 20:18:59.390628-05	1	15	6	OpeningHours object	1	
+129	2014-12-18 20:19:08.073745-05	1	15	6	OpeningHours object	2	No fields changed.
+130	2014-12-18 20:19:17.912795-05	1	15	7	OpeningHours object	1	
+131	2014-12-18 20:19:22.499817-05	1	15	7	OpeningHours object	2	No fields changed.
+132	2014-12-18 20:19:46.400855-05	1	15	8	OpeningHours object	1	
+133	2014-12-18 20:19:57.273706-05	1	15	9	OpeningHours object	1	
+134	2014-12-18 20:20:01.034098-05	1	15	9	OpeningHours object	2	No fields changed.
+135	2014-12-18 20:20:09.345179-05	1	15	10	OpeningHours object	1	
+136	2014-12-18 20:20:18.21732-05	1	15	11	OpeningHours object	1	
+137	2014-12-18 20:49:11.830159-05	1	15	8	OpeningHours object	2	Changed from_hour and to_hour.
+138	2014-12-18 22:45:39.864435-05	1	15	12	OpeningHours object	1	
+139	2014-12-19 03:19:53.615232-05	1	13	77	admin	3	
+140	2014-12-19 03:19:53.622518-05	1	13	76	admin	3	
+141	2014-12-19 03:19:53.626537-05	1	13	75	admin	3	
+142	2014-12-19 03:19:53.630379-05	1	13	74	admin	3	
+143	2014-12-19 03:19:53.63323-05	1	13	73	admin	3	
+144	2014-12-19 03:19:53.635927-05	1	13	72	admin	3	
+145	2014-12-19 03:19:53.638733-05	1	13	71	admin	3	
+146	2014-12-19 03:19:53.641178-05	1	13	70	admin	3	
+147	2014-12-21 13:49:23.300444-05	1	4	15	dk	2	Changed is_staff.
+148	2014-12-21 14:19:50.565187-05	1	4	15	dk	2	Changed is_superuser.
+149	2014-12-21 14:21:17.250661-05	1	4	15	dk	2	Changed user_permissions.
+150	2014-12-21 14:22:30.414306-05	1	4	15	dk	2	No fields changed.
+151	2014-12-21 14:22:39.080132-05	1	4	15	dk	2	Changed user_permissions.
+152	2014-12-21 14:23:53.52192-05	1	4	15	dk	2	Changed user_permissions.
+153	2014-12-21 14:24:36.972348-05	1	4	15	dk	2	Changed password.
+154	2014-12-21 14:26:38.414497-05	15	4	15	dk	2	Changed user_permissions.
+155	2014-12-21 14:28:33.976974-05	15	4	15	dk	2	Changed user_permissions.
+156	2014-12-21 14:29:37.821455-05	15	4	11	user01	2	Changed password.
+157	2014-12-21 14:30:51.412256-05	1	4	17	ed	1	
+158	2014-12-21 15:53:22.942635-05	1	15	13	OpeningHours object	1	
+159	2014-12-21 15:53:47.723281-05	1	15	14	OpeningHours object	1	
+\.
+
+
+--
+-- Name: django_admin_log_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('django_admin_log_id_seq', 159, true);
+
+
+--
+-- Data for Name: django_content_type; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY django_content_type (id, name, app_label, model) FROM stdin;
+1	log entry	admin	logentry
+2	permission	auth	permission
+3	group	auth	group
+4	user	auth	user
+5	content type	contenttypes	contenttype
+6	session	sessions	session
+7	address	webapp	address
+8	subscription tier	webapp	subscriptiontier
+9	business type	webapp	businesstype
+10	business	webapp	business
+11	business location	webapp	businesslocation
+12	service	webapp	service
+13	appointment	webapp	appointment
+14	review	webapp	review
+15	opening hours	webapp	openinghours
+16	availability	webapp	availability
+\.
+
+
+--
+-- Name: django_content_type_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('django_content_type_id_seq', 16, true);
+
+
+--
+-- Data for Name: django_migrations; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY django_migrations (id, app, name, applied) FROM stdin;
+1	contenttypes	0001_initial	2014-10-18 21:08:52.655432-04
+2	auth	0001_initial	2014-10-18 21:08:52.670019-04
+3	admin	0001_initial	2014-10-18 21:08:52.70105-04
+4	sessions	0001_initial	2014-10-18 21:08:52.706655-04
+5	webapp	0001_initial	2014-10-19 01:27:56.422232-04
+6	webapp	0002_auto_20141019_0619	2014-11-01 19:06:06.497417-04
+7	webapp	0003_auto_20141101_2220	2014-11-01 19:06:06.708849-04
+8	webapp	0004_auto_20141104_0034	2014-11-03 19:45:52.107384-05
+9	webapp	0005_auto_20141104_0252	2014-11-03 21:53:03.008072-05
+10	webapp	0006_auto_20141214_2020	2014-12-14 15:21:02.261474-05
+11	webapp	0007_openinghours	2014-12-15 19:27:31.770075-05
+12	webapp	0008_auto_20141216_0039	2014-12-15 19:41:19.742941-05
+13	webapp	0009_auto_20141216_0118	2014-12-15 20:19:09.375033-05
+14	webapp	0010_auto_20141216_0119	2014-12-15 20:20:07.059435-05
+15	webapp	0011_auto_20141216_2117	2014-12-16 16:18:03.49438-05
+16	webapp	0012_auto_20141216_2121	2014-12-16 16:21:12.80372-05
+17	webapp	0013_appointment_availability	2014-12-16 16:22:45.773637-05
+18	webapp	0014_auto_20141216_2203	2014-12-16 17:03:17.801396-05
+19	webapp	0015_auto_20141218_2013	2014-12-18 15:13:34.412567-05
+\.
+
+
+--
+-- Name: django_migrations_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('django_migrations_id_seq', 19, true);
+
+
+--
+-- Data for Name: django_session; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY django_session (session_key, session_data, expire_date) FROM stdin;
+8stmgvxp0mfbga9g0z3orrt57g2tuiou	ODRiZGUxMzE5YzU2NGJhOThkYTI0M2FhOTg4NzliNzZmMTcyMDc3Mzp7Il9hdXRoX3VzZXJfaGFzaCI6IjI2MjU1OTJiMmNiMWUyZWY5NWVlZDQzMzA0Y2VlMTI0MTU1MmI0NmMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOjF9	2014-12-15 14:20:48.167061-05
+7ytux7bz36ch6lmpjseavid3hr20661w	ODRiZGUxMzE5YzU2NGJhOThkYTI0M2FhOTg4NzliNzZmMTcyMDc3Mzp7Il9hdXRoX3VzZXJfaGFzaCI6IjI2MjU1OTJiMmNiMWUyZWY5NWVlZDQzMzA0Y2VlMTI0MTU1MmI0NmMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOjF9	2014-11-02 01:48:37.401955-04
+3rfj7g7kn0p9wnyzkqa3wppx73gsxc7g	ODRiZGUxMzE5YzU2NGJhOThkYTI0M2FhOTg4NzliNzZmMTcyMDc3Mzp7Il9hdXRoX3VzZXJfaGFzaCI6IjI2MjU1OTJiMmNiMWUyZWY5NWVlZDQzMzA0Y2VlMTI0MTU1MmI0NmMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOjF9	2014-11-15 15:34:57.219441-05
+j1k6yqhcwtzd74dlyd5sayo916zdv6ag	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-15 19:19:12.750336-05
+cknpb5rlck170l3m4si9v3076pwyi9w9	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-18 16:55:09.629826-05
+lbaz9eip39mvdoalmr2zsjba39wry33m	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-18 18:41:25.299098-05
+798fk2x0kt1kdl3vx16vy5cpkobwfiwb	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-05 08:19:27.917585-05
+wrc0yrn0f7el8097tudsqtm4h82fubym	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-05 15:38:57.581681-05
+bwnoau5b8f822h3pnql7sja8bj5ayi8o	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-05 15:39:00.674662-05
+4nsef5rz98sagdarln0aihkdmnavkoi3	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-05 15:46:24.008749-05
+3pv2q921kfqm59kky3u6hbd4yehjuhx3	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-05 15:46:27.876563-05
+xsbjcf0gcb5ructmfnid5yh1jbstaab9	ODRiZGUxMzE5YzU2NGJhOThkYTI0M2FhOTg4NzliNzZmMTcyMDc3Mzp7Il9hdXRoX3VzZXJfaGFzaCI6IjI2MjU1OTJiMmNiMWUyZWY5NWVlZDQzMzA0Y2VlMTI0MTU1MmI0NmMiLCJfYXV0aF91c2VyX2JhY2tlbmQiOiJkamFuZ28uY29udHJpYi5hdXRoLmJhY2tlbmRzLk1vZGVsQmFja2VuZCIsIl9hdXRoX3VzZXJfaWQiOjF9	2015-01-04 16:10:04.228905-05
+wbjw4eaowwnkioa1f181rm1tsjkglqer	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2015-01-04 14:17:25.640836-05
+xbpbnylwd6vhe0fln1fyqe2d25xvhayu	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2015-01-04 14:18:19.933622-05
+afufhofwpk24o189uxee0wozprf2d3nu	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2015-01-04 14:18:25.79969-05
+mr5xm2cqx8l6hkanh59y2a2oak0uapym	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2015-01-04 14:18:33.555746-05
+ud9hbrl24l400qhze5hsdbj38ewtwbky	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2015-01-04 14:18:34.954174-05
+5i06y1dhvcj13v2xnobiqz8fb1ds95tq	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2015-01-04 14:18:36.122668-05
+36ngx4loikkktgeu5pqekdosfqkev3og	YjRhY2E3MTVmZTg1ZWQ1OWMxN2Y5NDg1YTlhOGEwMDg3MTk2Y2NlZDp7fQ==	2014-12-05 16:59:37.531194-05
+\.
+
+
+--
+-- Data for Name: webapp_address; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_address (id, street, city, state, postal_code, lat, long, business_location_id) FROM stdin;
+1	22 E 109TH ST	New York	NY	10029	40.736711	-73.991179	1
+2	2013 3rd Ave	New York	NY	10029	40.794927	-73.942117	2
+3	100 Hopmeadow Street	Simsbury	Connecticut	06070	41.828600	-72.824000	3
+4	336 E 86TH ST	New York	New York	10028	40.777166	-73.950490	4
+\.
+
+
+--
+-- Name: webapp_address_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_address_id_seq', 4, true);
+
+
+--
+-- Data for Name: webapp_appointment; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_appointment (id, completed, business_location_id, service_recipient_id, "when", availability_id) FROM stdin;
+78	f	1	1	2014-12-18 09:00:00-05	10
+79	f	4	1	2014-12-18 09:00:00-05	11
+80	f	4	1	2014-12-18 10:00:00-05	18
+81	f	1	1	2014-12-19 10:00:00-05	19
+82	f	1	1	2014-12-24 09:00:00-05	20
+83	f	1	1	2014-12-20 11:59:00-05	21
+84	f	1	15	2014-12-18 14:00:00-05	14
+85	f	1	1	2014-12-23 15:00:00-05	22
+86	f	1	26	2014-12-27 10:00:00-05	23
+\.
+
+
+--
+-- Name: webapp_appointment_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_appointment_id_seq', 86, true);
+
+
+--
+-- Data for Name: webapp_appointment_services; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_appointment_services (id, appointment_id, service_id) FROM stdin;
+\.
+
+
+--
+-- Name: webapp_appointment_services_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_appointment_services_id_seq', 47, true);
+
+
+--
+-- Data for Name: webapp_availability; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_availability (id, count, date, store_id) FROM stdin;
+9	7	2014-12-31 20:00:00-05	1
+12	9	2014-12-18 11:00:00-05	4
+13	9	2014-12-18 11:00:00-05	1
+15	9	2014-12-18 13:00:00-05	4
+16	9	2014-12-18 15:00:00-05	1
+17	9	2014-12-18 14:00:00-05	4
+10	8	2014-12-18 09:00:00-05	1
+11	8	2014-12-18 09:00:00-05	4
+18	9	2014-12-18 10:00:00-05	4
+19	9	2014-12-19 10:00:00-05	1
+20	9	2014-12-24 09:00:00-05	1
+21	9	2014-12-20 11:59:00-05	1
+14	8	2014-12-18 14:00:00-05	1
+22	9	2014-12-23 15:00:00-05	1
+23	9	2014-12-27 10:00:00-05	1
+\.
+
+
+--
+-- Name: webapp_availability_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_availability_id_seq', 23, true);
+
+
+--
+-- Data for Name: webapp_business; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_business (id, business_name, description, publication_status, payment_status, business_type_id, registered_by_id, subscription_tier_id) FROM stdin;
+1	Pepe Auto Repair	We service any type of auto.	t	t	1	1	1
+2	Prestige Auto	2013 3rd Ave\r\nNew York, NY 10029	f	f	1	1	1
+3	AAA	Cheap	t	t	1	1	1
+4	CityMD	336 E 86th St\r\nNew York, NY 10028\r\nb/t 1st Ave & 2nd Ave in Yorkville, Upper East Side	t	f	2	1	1
+\.
+
+
+--
+-- Name: webapp_business_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_business_id_seq', 4, true);
+
+
+--
+-- Data for Name: webapp_businesslocation; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_businesslocation (id, location_name, description, business_id, slug, default_availability) FROM stdin;
+1	East Harlem	Our flagship store.	1	pepe-auto-repair-east-harlem	10
+2	NYC	2013 3rd Ave\r\nNew York, NY 10029	2	prestige-auto-nyc	10
+3	100 Hopmeadow Street	Open 24/7	3	AAA	10
+4	Yorkville	(212) 772-3627	4	city-md-yorkville	10
+\.
+
+
+--
+-- Name: webapp_businesslocation_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_businesslocation_id_seq', 4, true);
+
+
+--
+-- Data for Name: webapp_businesstype; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_businesstype (id, business_type) FROM stdin;
+1	Automotive
+2	Medical Care
+\.
+
+
+--
+-- Name: webapp_businesstype_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_businesstype_id_seq', 2, true);
+
+
+--
+-- Data for Name: webapp_openinghours; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_openinghours (id, weekday, from_hour, to_hour, store_id) FROM stdin;
+5	1	12:00:00	20:00:00	1
+3	1	09:00:00	18:00:00	2
+6	2	10:00:00	21:00:00	1
+7	3	10:00:00	21:00:00	1
+9	5	10:00:00	21:00:00	1
+10	6	10:00:00	21:00:00	1
+11	7	10:00:00	21:00:00	1
+8	4	07:00:00	22:00:00	1
+12	4	08:00:00	21:00:00	4
+13	1	08:00:00	22:00:00	3
+14	2	08:00:00	22:00:00	3
+\.
+
+
+--
+-- Name: webapp_openinghours_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_openinghours_id_seq', 14, true);
+
+
+--
+-- Data for Name: webapp_review; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_review (id, review, appointment_id, author_id) FROM stdin;
+\.
+
+
+--
+-- Name: webapp_review_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_review_id_seq', 1, false);
+
+
+--
+-- Data for Name: webapp_service; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_service (id, name, description, price_estimate, business_location_id) FROM stdin;
+1	Oil Change	Full premium oil change.	50.00	1
+2	Car Wash	Deep car cleaning	75.99	1
+\.
+
+
+--
+-- Name: webapp_service_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_service_id_seq', 2, true);
+
+
+--
+-- Data for Name: webapp_subscriptiontier; Type: TABLE DATA; Schema: public; Owner: django
+--
+
+COPY webapp_subscriptiontier (id, tier_name, cost) FROM stdin;
+1	Tier 1	42.50
+2	Tier 1	20.00
+\.
+
+
+--
+-- Name: webapp_subscriptiontier_id_seq; Type: SEQUENCE SET; Schema: public; Owner: django
+--
+
+SELECT pg_catalog.setval('webapp_subscriptiontier_id_seq', 2, true);
+
+
+--
+-- Name: auth_group_name_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_name_key UNIQUE (name);
+
+
+--
+-- Name: auth_group_permissions_group_id_permission_id_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_group_id_permission_id_key UNIQUE (group_id, permission_id);
+
+
+--
+-- Name: auth_group_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_group
+    ADD CONSTRAINT auth_group_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_permission_content_type_id_codename_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_content_type_id_codename_key UNIQUE (content_type_id, codename);
+
+
+--
+-- Name: auth_permission_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT auth_permission_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_groups_user_id_group_id_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_user_id_group_id_key UNIQUE (user_id, group_id);
+
+
+--
+-- Name: auth_user_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id_permission_id_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_user_id_permission_id_key UNIQUE (user_id, permission_id);
+
+
+--
+-- Name: auth_user_username_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY auth_user
+    ADD CONSTRAINT auth_user_username_key UNIQUE (username);
+
+
+--
+-- Name: django_admin_log_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT django_admin_log_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_content_type_app_label_model_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_app_label_model_key UNIQUE (app_label, model);
+
+
+--
+-- Name: django_content_type_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY django_content_type
+    ADD CONSTRAINT django_content_type_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY django_migrations
+    ADD CONSTRAINT django_migrations_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: django_session_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY django_session
+    ADD CONSTRAINT django_session_pkey PRIMARY KEY (session_key);
+
+
+--
+-- Name: webapp_address_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_address
+    ADD CONSTRAINT webapp_address_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_appointment_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_appointment
+    ADD CONSTRAINT webapp_appointment_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_appointment_services_appointment_id_service_id_key; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_appointment_services
+    ADD CONSTRAINT webapp_appointment_services_appointment_id_service_id_key UNIQUE (appointment_id, service_id);
+
+
+--
+-- Name: webapp_appointment_services_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_appointment_services
+    ADD CONSTRAINT webapp_appointment_services_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_availability_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_availability
+    ADD CONSTRAINT webapp_availability_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_business_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_business
+    ADD CONSTRAINT webapp_business_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_businesslocation_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_businesslocation
+    ADD CONSTRAINT webapp_businesslocation_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_businesstype_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_businesstype
+    ADD CONSTRAINT webapp_businesstype_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_openinghours_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_openinghours
+    ADD CONSTRAINT webapp_openinghours_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_openinghours_weekday_6b841e40b8e43d4e_uniq; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_openinghours
+    ADD CONSTRAINT webapp_openinghours_weekday_6b841e40b8e43d4e_uniq UNIQUE (weekday, store_id);
+
+
+--
+-- Name: webapp_review_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_review
+    ADD CONSTRAINT webapp_review_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_service_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_service
+    ADD CONSTRAINT webapp_service_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: webapp_subscriptiontier_pkey; Type: CONSTRAINT; Schema: public; Owner: django; Tablespace: 
+--
+
+ALTER TABLE ONLY webapp_subscriptiontier
+    ADD CONSTRAINT webapp_subscriptiontier_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: auth_group_name_like; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_group_name_like ON auth_group USING btree (name varchar_pattern_ops);
+
+
+--
+-- Name: auth_group_permissions_group_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_group_id ON auth_group_permissions USING btree (group_id);
+
+
+--
+-- Name: auth_group_permissions_permission_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_group_permissions_permission_id ON auth_group_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_permission_content_type_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_permission_content_type_id ON auth_permission USING btree (content_type_id);
+
+
+--
+-- Name: auth_user_groups_group_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_group_id ON auth_user_groups USING btree (group_id);
+
+
+--
+-- Name: auth_user_groups_user_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_user_groups_user_id ON auth_user_groups USING btree (user_id);
+
+
+--
+-- Name: auth_user_user_permissions_permission_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_permission_id ON auth_user_user_permissions USING btree (permission_id);
+
+
+--
+-- Name: auth_user_user_permissions_user_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_user_user_permissions_user_id ON auth_user_user_permissions USING btree (user_id);
+
+
+--
+-- Name: auth_user_username_like; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX auth_user_username_like ON auth_user USING btree (username varchar_pattern_ops);
+
+
+--
+-- Name: django_admin_log_content_type_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_content_type_id ON django_admin_log USING btree (content_type_id);
+
+
+--
+-- Name: django_admin_log_user_id; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX django_admin_log_user_id ON django_admin_log USING btree (user_id);
+
+
+--
+-- Name: django_session_expire_date; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX django_session_expire_date ON django_session USING btree (expire_date);
+
+
+--
+-- Name: django_session_session_key_like; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX django_session_session_key_like ON django_session USING btree (session_key varchar_pattern_ops);
+
+
+--
+-- Name: webapp_address_ed64ac82; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_address_ed64ac82 ON webapp_address USING btree (business_location_id);
+
+
+--
+-- Name: webapp_appointment_0ed5ad1d; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_appointment_0ed5ad1d ON webapp_appointment USING btree (service_recipient_id);
+
+
+--
+-- Name: webapp_appointment_ed64ac82; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_appointment_ed64ac82 ON webapp_appointment USING btree (business_location_id);
+
+
+--
+-- Name: webapp_appointment_ef8588df; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_appointment_ef8588df ON webapp_appointment USING btree (availability_id);
+
+
+--
+-- Name: webapp_appointment_services_54c91d3b; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_appointment_services_54c91d3b ON webapp_appointment_services USING btree (appointment_id);
+
+
+--
+-- Name: webapp_appointment_services_b0dc1e29; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_appointment_services_b0dc1e29 ON webapp_appointment_services USING btree (service_id);
+
+
+--
+-- Name: webapp_availability_7473547c; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_availability_7473547c ON webapp_availability USING btree (store_id);
+
+
+--
+-- Name: webapp_business_01abc0d6; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_business_01abc0d6 ON webapp_business USING btree (subscription_tier_id);
+
+
+--
+-- Name: webapp_business_5d510b58; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_business_5d510b58 ON webapp_business USING btree (business_type_id);
+
+
+--
+-- Name: webapp_business_6ce52ef2; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_business_6ce52ef2 ON webapp_business USING btree (registered_by_id);
+
+
+--
+-- Name: webapp_businesslocation_2f4e4ac4; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_businesslocation_2f4e4ac4 ON webapp_businesslocation USING btree (business_id);
+
+
+--
+-- Name: webapp_openinghours_7473547c; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_openinghours_7473547c ON webapp_openinghours USING btree (store_id);
+
+
+--
+-- Name: webapp_review_4f331e2f; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_review_4f331e2f ON webapp_review USING btree (author_id);
+
+
+--
+-- Name: webapp_review_54c91d3b; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_review_54c91d3b ON webapp_review USING btree (appointment_id);
+
+
+--
+-- Name: webapp_service_ed64ac82; Type: INDEX; Schema: public; Owner: django; Tablespace: 
+--
+
+CREATE INDEX webapp_service_ed64ac82 ON webapp_service USING btree (business_location_id);
+
+
+--
+-- Name: a1ed46bc6e0c4d4064cba9d09cfe5af4; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_address
+    ADD CONSTRAINT a1ed46bc6e0c4d4064cba9d09cfe5af4 FOREIGN KEY (business_location_id) REFERENCES webapp_businesslocation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_group_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT auth_group_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_groups_group_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT auth_user_groups_group_id_fkey FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: auth_user_user_permissions_permission_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT auth_user_user_permissions_permission_id_fkey FOREIGN KEY (permission_id) REFERENCES auth_permission(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: b75da3e79d7e28202881edd48dda522d; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_service
+    ADD CONSTRAINT b75da3e79d7e28202881edd48dda522d FOREIGN KEY (business_location_id) REFERENCES webapp_businesslocation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: b8f335e0d4d377f8ce24ee3e3a78c8ae; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_business
+    ADD CONSTRAINT b8f335e0d4d377f8ce24ee3e3a78c8ae FOREIGN KEY (subscription_tier_id) REFERENCES webapp_subscriptiontier(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: content_type_id_refs_id_93d2d1f8; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT content_type_id_refs_id_93d2d1f8 FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: content_type_id_refs_id_d043b34a; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_permission
+    ADD CONSTRAINT content_type_id_refs_id_d043b34a FOREIGN KEY (content_type_id) REFERENCES django_content_type(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: d20193315800d208b737ce48c57efe52; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_appointment
+    ADD CONSTRAINT d20193315800d208b737ce48c57efe52 FOREIGN KEY (business_location_id) REFERENCES webapp_businesslocation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: group_id_refs_id_f4b32aac; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_group_permissions
+    ADD CONSTRAINT group_id_refs_id_f4b32aac FOREIGN KEY (group_id) REFERENCES auth_group(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_40c41112; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_user_groups
+    ADD CONSTRAINT user_id_refs_id_40c41112 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_4dc23c39; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY auth_user_user_permissions
+    ADD CONSTRAINT user_id_refs_id_4dc23c39 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: user_id_refs_id_c0d12874; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY django_admin_log
+    ADD CONSTRAINT user_id_refs_id_c0d12874 FOREIGN KEY (user_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: weba_availability_id_23ed340b032a9c4c_fk_webapp_availability_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_appointment
+    ADD CONSTRAINT weba_availability_id_23ed340b032a9c4c_fk_webapp_availability_id FOREIGN KEY (availability_id) REFERENCES webapp_availability(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: weba_business_type_id_f45be6858ef2b77_fk_webapp_businesstype_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_business
+    ADD CONSTRAINT weba_business_type_id_f45be6858ef2b77_fk_webapp_businesstype_id FOREIGN KEY (business_type_id) REFERENCES webapp_businesstype(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp__store_id_3eb5b3414bbf46e4_fk_webapp_businesslocation_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_availability
+    ADD CONSTRAINT webapp__store_id_3eb5b3414bbf46e4_fk_webapp_businesslocation_id FOREIGN KEY (store_id) REFERENCES webapp_businesslocation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp__store_id_45bdf504c94c651c_fk_webapp_businesslocation_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_openinghours
+    ADD CONSTRAINT webapp__store_id_45bdf504c94c651c_fk_webapp_businesslocation_id FOREIGN KEY (store_id) REFERENCES webapp_businesslocation(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp_ap_service_recipient_id_3e7d3dce7aa7e527_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_appointment
+    ADD CONSTRAINT webapp_ap_service_recipient_id_3e7d3dce7aa7e527_fk_auth_user_id FOREIGN KEY (service_recipient_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp_appoint_service_id_659a6e4d4af04ad1_fk_webapp_service_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_appointment_services
+    ADD CONSTRAINT webapp_appoint_service_id_659a6e4d4af04ad1_fk_webapp_service_id FOREIGN KEY (service_id) REFERENCES webapp_service(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp_appointment_id_12f440887cf9e9e3_fk_webapp_appointment_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_review
+    ADD CONSTRAINT webapp_appointment_id_12f440887cf9e9e3_fk_webapp_appointment_id FOREIGN KEY (appointment_id) REFERENCES webapp_appointment(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp_appointment_id_52f41ae063e2d2c3_fk_webapp_appointment_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_appointment_services
+    ADD CONSTRAINT webapp_appointment_id_52f41ae063e2d2c3_fk_webapp_appointment_id FOREIGN KEY (appointment_id) REFERENCES webapp_appointment(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp_busin_business_id_246c9883dcb4fb3a_fk_webapp_business_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_businesslocation
+    ADD CONSTRAINT webapp_busin_business_id_246c9883dcb4fb3a_fk_webapp_business_id FOREIGN KEY (business_id) REFERENCES webapp_business(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp_busine_registered_by_id_209f5d0d0ee5c604_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_business
+    ADD CONSTRAINT webapp_busine_registered_by_id_209f5d0d0ee5c604_fk_auth_user_id FOREIGN KEY (registered_by_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: webapp_review_author_id_6c35890a24aa18a6_fk_auth_user_id; Type: FK CONSTRAINT; Schema: public; Owner: django
+--
+
+ALTER TABLE ONLY webapp_review
+    ADD CONSTRAINT webapp_review_author_id_6c35890a24aa18a6_fk_auth_user_id FOREIGN KEY (author_id) REFERENCES auth_user(id) DEFERRABLE INITIALLY DEFERRED;
+
+
+--
+-- Name: public; Type: ACL; Schema: -; Owner: postgres
+--
+
+REVOKE ALL ON SCHEMA public FROM PUBLIC;
+REVOKE ALL ON SCHEMA public FROM postgres;
+GRANT ALL ON SCHEMA public TO postgres;
+GRANT ALL ON SCHEMA public TO PUBLIC;
+
+
+--
+-- PostgreSQL database dump complete
+--
+
