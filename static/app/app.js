@@ -1,13 +1,14 @@
 'use strict';
 
 // Declare app level module which depends on views, and components
-angular.module('myApp', [
+var app = angular.module('myApp', [
   'ui.router',
   'djangoRESTResources',
   'myApp.home',
   'AppServices',
-  'ui.bootstrap.datetimepicker'
-]).
+  'ui.bootstrap.datetimepicker',
+  'ui.bootstrap'
+])
 // config(['$routeProvider', function($routeProvider) {
 //   $routeProvider.otherwise({redirectTo: '/view1'});
 // }]);
@@ -38,7 +39,7 @@ angular.module('myApp', [
 // 		$locationProvider.html5Mode(true);
 // 	});
 
-config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider) {
+app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProvider, USER_ROLES) {
   // django and angular both support csrf tokens. This tells
         // angular which cookie to add to what header.
         $httpProvider.defaults.xsrfCookieName = 'csrftoken';
@@ -50,13 +51,25 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
   .state('home', {
       url: "/",
       templateUrl: "/static/app/home/home.html",
-      controller: 'HomeCtrl'
+      controller: 'HomeCtrl',
+      data: {
+      authorizedRoles: [USER_ROLES.all, USER_ROLES.guest, USER_ROLES.admin, USER_ROLES.editor]
+      } 
     })
     .state('stores', {
       url: "/stores/",
       templateUrl: "/static/app/home/search.html",
       controller: 'StoreMapCtrl'
     })
+    .state('profile', {
+      url: "/profile/",
+      templateUrl: "/static/app/user/profile.html",
+      controller: 'ProfileCtrl',
+      data: {
+      authorizedRoles: [USER_ROLES.admin, USER_ROLES.editor, USER_ROLES.all]
+      } 
+    })
+        
     // .state('customizer', {
     //   url: "/customizer/",
     //   templateUrl: "/static/app/customizer/select.html",
@@ -76,7 +89,29 @@ config(function($stateProvider, $urlRouterProvider, $locationProvider, $httpProv
   $urlRouterProvider.otherwise("/");
     //use the HTML5 History API
 		$locationProvider.html5Mode(true);
-});
+})
+app.run(function ($rootScope, AUTH_EVENTS, AuthService, Session, USER_ROLES) {
+if($rootScope.user){
+  alert('asdasdzxczxczxczxczxczxc')
+}
+  console.log(USER_ROLES)
+    Session.create('default','guest',USER_ROLES.guest)
+      console.log(Session)
+  $rootScope.$on('$stateChangeStart', function (event, next) {
+    var authorizedRoles = next.data.authorizedRoles;
+    if (!AuthService.isAuthorized(authorizedRoles)) {
+      event.preventDefault();
+      if (AuthService.isAuthenticated()) {
+
+        // user is not allowed
+        $rootScope.$broadcast(AUTH_EVENTS.notAuthorized);
+      } else {
+        // user is not logged in
+        $rootScope.$broadcast(AUTH_EVENTS.notAuthenticated);
+      }
+    }
+  });
+})
 // angular.module('authApp', ['ngResource']).
 //     config(['$httpProvider', function($httpProvider){
 //         // django and angular both support csrf tokens. This tells

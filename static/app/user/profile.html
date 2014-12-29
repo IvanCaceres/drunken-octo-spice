@@ -1,0 +1,34 @@
+<h3 class="profile-header">User Profile Settings</h3>
+<p style="text-align:left">Welcome, {{user}}</p>
+
+
+
+<div class="panel panel-default">
+  <!-- Default panel contents   <div class="panel-heading">Saved Vehicles :</div>
+  <div ng-show="userCars.length == 0"class="panel-body">
+    <p>It appears that you have no cars saved, please add one.</p>
+  </div>
+
+  <!-- List group -->
+  <ul ng-hide="userCars.length == 0"class="list-group">
+    <li ng-repeat="car in userCars"class="list-group-item"><p class="userCarTxtCnt">{{car.model.year.year}} - {{car.model.make.name}} - {{car.model.model}}</p>
+    <button type="button" class="btn btn-danger carDeleteBtn" ng-click="userCarDelete(car, $index)">Delete</button>
+    </li>
+  </ul>
+</div>
+
+<div class="vehicles-container">
+	<h5 class="profile-header">Save a vehicle to profile:</h5>
+	<select ng-model="CarYear" ng-options="year.year for year in carYears">
+			<option value="">-- choose a year --</option>
+	</select>
+	<select ng-model="CarMake" ng-options="make.name for make in carMakes">
+			<option value="">-- choose a make --</option>
+	</select>
+	<div class="CarModelContainer" ng-show="CarYear && CarMake">
+		<select ng-model="CarModel" ng-options="model.model for model in carModels">
+			<option value="">-- choose a make --</option>
+		</select>
+		<a ng-show="CarModel" class="pure-button pure-button-primary button-xlarge carModelSave" ng-click="userCarSave()" ng-class="">Save</a>
+	</div>
+</div>

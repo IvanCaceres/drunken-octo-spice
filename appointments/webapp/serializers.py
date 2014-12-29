@@ -1,6 +1,6 @@
 from django.forms import widgets
 from rest_framework import serializers
-from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, OpeningHours, Availability
+from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, OpeningHours, Availability, CarMake, Year, CarModel, UserCar
 from django.contrib.auth.models import User
  
 class OldUserSerializer(serializers.ModelSerializer):
@@ -78,7 +78,37 @@ class AddressSerializer(serializers.ModelSerializer):
 class AppointmentSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Appointment
-		fields = ('availability' , 'business_location', 'services', 'when', 'service_recipient', 'completed')
+		fields = ('availability' , 'business_location', 'services', 'when', 'service_recipient', 'completed', 'cars')
+
+class CarMakeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CarMake
+        fields = ('id','name')        
+
+class YearSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Year
+        fields = ('id','year')
+
+class CarModelSerializer(serializers.ModelSerializer):
+    year = YearSerializer()
+    make = CarMakeSerializer()
+    class Meta:
+        model = CarModel
+        fields = ('id','year', 'make', 'model')
+
+class UserCarCreateSerializer(serializers.ModelSerializer):
+    # model = CarModelSerializer()
+    class Meta:
+        model = UserCar
+        fields = ('id','user','model')
+
+class UserCarSerializer(serializers.ModelSerializer):
+    model = CarModelSerializer()
+    class Meta:
+        model = UserCar
+        fields = ('id','user','model')        
+
 
 
 

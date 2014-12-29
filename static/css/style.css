@@ -138,10 +138,14 @@ width: 100%;
 text-align: right;
 background: none;
 box-shadow: none;
+display: block;
 }
 .pure-button.pure-button-primary {
 background-color: #2A7DC2;
 color: white;
+font-family: 'Open Sans';
+text-decoration: none;
+cursor: pointer;
 }
 #id_auth_form input.pure-button {
 	border:none;
@@ -178,4 +182,33 @@ color: white;
 }
 #panel {
 	display: none;
+}
+.ng-hide {
+display: none !important;
+}
+.profile-header {
+border-bottom: solid 1px black;
+padding-bottom: 6px;
+}
+.CarModelContainer {padding-top: 10px;}
+.carModelSave{
+display: block;
+margin-top: 10px;
+width: 60px;
+margin-left: auto;
+margin-right: auto;
+font-size: 14px;
+}
+.carDeleteBtn {
+margin-left: 10px;
+padding: 2px 8px;
+position: absolute;
+right: 7px;
+top: 7px;
+}
+.userCarTxtCnt {
+width: 164px;
+text-align: center;
+margin-left: auto;
+margin-right: auto;
 }

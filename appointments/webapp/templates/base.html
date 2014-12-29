@@ -36,21 +36,24 @@
     </div>
 
     <div class="app-container login-container">
-      <div class="navbar navbar-fixed-bottom" ng-controller="authController"
-         ng-init="user='{{user.username}}'">
+
+      <div class="authAttribs" data-user="{{user.username}}" data-session="{{request.session.session_key}}" data-userId="{{user.id}}" ng-controller="authController"
+         ng-init="$root.user='{{user.username}}';$root.session_key='{{request.session.session_key}}'" >
         {% verbatim %}
-        <div ng-show="user" class="navbar-form navbar-right">
+        <div ng-show="$root.user" class="ng-hide navbar-form navbar-right" style="">
+          <!-- <input type="submit" class="pure-button pure-button-primary btn btn-default" ng-click="" value="profile"/> -->
+          <a ui-sref="profile" class="pure-button pure-button-primary btn btn-default">profile</a>
             <input type="submit" class="pure-button pure-button-primary btn btn-default" ng-click="logout()"
                    value="logout {{user}}"/>
         </div>
-        <div ng-hide="user">
+        <div ng-hide="$root.user">
             <form id="id_auth_form" class="pure-form navbar-form navbar-right"
                   ng-submit="login()">
 
-                    <input ng-model="username" required name="username"
+                    <input ng-model="$root.username" required name="username"
                            type="text" placeholder="username" class="form-control">
 
-                    <input ng-model="password" required name="password" type="password"
+                    <input ng-model="$root.password" required name="password" type="password"
                            placeholder="password" class="form-control">
 
                     <input type="submit" class="pure-button pure-button-primary btn btn-default" value="login">
@@ -76,9 +79,11 @@
           <script src="/static/app/app.js"></script>
           <script src="/static/app/services.js"></script>
           <script src="/static/app/home/home.js"></script>
+          <script src="/static/app/user/profile.js"></script>
           <script type="text/javascript" src="/static/js/datetimepicker.js"></script>
           <script src="/static/js/store-locator.min.js"></script>
           <script src="/static/js/autofill-event/src/autofill-event.js"></script>
+          <script src="/static/js/ui-bootstrap-tpls-0.12.0.min.js"></script>
           <!-- 
           
 

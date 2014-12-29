@@ -100,6 +100,7 @@ class Appointment(models.Model):
 	availability = models.ForeignKey(
 		'Availability', related_name = 'appointment'
 	)
+	cars = models.ManyToManyField('UserCar')
 	# def __unicode__(self):
 	# 	return  u'%s %s %s %s %s' % (self.service_recipient," - ", self.business_location)
 	def __unicode__(self):
@@ -143,3 +144,37 @@ class Availability(models.Model):
     )
 	count = models.IntegerField(blank=False)
 	date = models.DateTimeField(blank = True, auto_now=False, null=True)
+
+class CarMake(models.Model):
+	name = models.CharField(max_length=50)
+	def __unicode__(self):
+		return self.name
+
+class Year(models.Model):
+	year = models.IntegerField()
+	def __unicode__(self):
+		return unicode(self.year)
+
+class CarModel(models.Model):
+	year = models.ForeignKey(Year)
+	make = models.ForeignKey(CarMake)
+	model = models.CharField(max_length=50)
+	def __unicode__(self):
+		return unicode(self.model)
+
+class CarBodyStyle(models.Model):
+	style = models.CharField(max_length=50)
+	def __unicode__(self):
+		return unicode(self.style)
+
+# class CarTrim(models.Model):
+# 	name = models.CharField(max_length=50)
+# 	 = models.ForeignKey(CarModel)
+# 	def __unicode__(self):
+# 		return unicode(self.name)
+
+class UserCar(models.Model):
+	user = models.ForeignKey(AUTH_USER_MODEL)
+	model = models.ForeignKey(CarModel)
+	def __unicode__(self):
+		return unicode(str(self.model.year)+' - '+str(self.model.make) + ' - '+ self.model.model)									

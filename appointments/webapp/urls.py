@@ -8,9 +8,14 @@ from rest_framework.decorators import api_view
 admin.autodiscover()
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserView, 'list')
+router.register(r'users', views.UserView, 'users')
 router.register(r'appointments', views.AppointmentViewSet, 'detail')
-router.register(r'availability', views.AvailabilityViewSet, 'list')
+router.register(r'availability', views.AvailabilityViewSet, 'availability')
+router.register(r'car/makes', views.CarMakeViewSet, 'car makes')
+router.register(r'car/years', views.YearViewSet, 'car years')
+router.register(r'car/models', views.CarModelViewSet, 'car models')
+router.register(r'car/users', views.UserCarViewSet, 'user car')
+router.register(r'car/userlist', views.UserCarListViewSet, 'user cars list')
 # routers.register(r'api/users/create/', views.EmailUserCreateViewset)
 
 # @api_view(('GET',))

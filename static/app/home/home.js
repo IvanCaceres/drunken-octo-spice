@@ -54,7 +54,7 @@ $scope.searchSubmit = function (location){
 }
 }]);
 
-app.controller('StoreMapCtrl', ['$scope','User', 'Addresses', 'Availability', 'Appointments', '$http', 'reverseGeocode' , function($scope, User, Addresses, Availability, Appointments , $http, reverseGeocode) {
+app.controller('StoreMapCtrl', ['$scope','User', 'Addresses', 'Availability', 'Appointments', '$http', '$modal', 'reverseGeocode', 'UserCarsService', 'Session' , function($scope, User, Addresses, Availability, Appointments , $http, $modal, reverseGeocode, UserCarsService, Session) {
 console.log(User)
 
 
@@ -96,7 +96,29 @@ console.log(result)
         console.log('THIS')
         console.log(this)
         var $this = this;
-        var Booking = Appointments.post(business_location,services,when);
+        console.log('dumping UserCarsService:')
+        console.log(UserCarsService)
+        // if(UserCarsService.data){
+        //   alert('found UserCarsService data')
+        //   var Booking = Appointments.post(business_location,services,when);
+        // Booking.$then(function(result){
+        //   console.log('completed booking logging result')
+        //   console.log(result)
+        //   $this.count = $this.count-1;
+        // }, function(error){
+        //   alert(error.data.detail)
+        // });
+        
+        // console.log(this)
+        // } else {
+          UserCarsService.get(Session.userId);
+          console.log(UserCarsService)
+          var modalInstance = UserCarsService.chooseCar();
+          modalInstance.result.then(function (selectedItem) {
+            var cars = [];
+            cars.push(UserCarsService.selected.id);
+            alert('closed the modal!!!')
+              var Booking = Appointments.post(business_location,services,when,cars);
         Booking.$then(function(result){
           console.log('completed booking logging result')
           console.log(result)
@@ -104,8 +126,8 @@ console.log(result)
         }, function(error){
           alert(error.data.detail)
         });
-        
-        console.log(this)
+          });
+        // }
       };
         if(result.data.length > 0){
           for(var i=0;i<$scope.businesses.length;i++){
@@ -285,18 +307,28 @@ if(User.address){
 // google.maps.event.addDomListener(window, 'load', function() {
 
 }]);
-app.controller('authController', ['$scope','api', function($scope, api) {
+app.controller('authController', ['$rootScope','$state','api','Session','USER_ROLES', function($rootScope, $state, api, Session, USER_ROLES) {
+  // if(Session.id){
+  //   alert('found a user')
+  // }
+  var authAttributes = angular.element('.authAttribs').data()
+  console.log('elem:')
+  console.log(authAttributes)
+  console.log('logging rootScope')
+  console.log($rootScope)
+  if(authAttributes.user){
+    Session.create(authAttributes.session, authAttributes.userid, USER_ROLES.all)
+  }
+        var $scope = $rootScope;
         // Angular does not detect auto-fill or auto-complete. If the browser
         // autofills "username", Angular will be unaware of this and think
         // the $scope.username is blank. To workaround this we use the 
         // autofill-event polyfill [4][5]
-        $('#id_auth_form input').checkAndTriggerAutoFillEvent();
+        // $('#id_auth_form input').checkAndTriggerAutoFillEvent();
  
         $scope.getCredentials = function(){
           console.log('running getCredentials')
-          alert($scope.username)
-            alert($scope.password)
-            return {username: $scope.username, password: $scope.password};
+            return {username: $rootScope.username, password: $rootScope.password};
             
         };
  
@@ -307,8 +339,9 @@ app.controller('authController', ['$scope','api', function($scope, api) {
                       console.log(data)
                       console.log('triggered the then signalling data is good')
                         // on good username and password
-                        $scope.user = $scope.username;
+                        $rootScope.user = $rootScope.username;
                         console.log($scope)
+                        Session.create(authAttributes.session, data.data.id, USER_ROLES.all)
                     }).
                     catch(function(data){
                         // on incorrect username and password
@@ -319,8 +352,9 @@ app.controller('authController', ['$scope','api', function($scope, api) {
  
         $scope.logout = function(){
             api.auth.logout(function(){
-                $scope.user = undefined;
+                $rootScope.user = undefined;
             });
+            $state.go('home')
         };
         $scope.register = function($event){
             // prevent login form from firing
@@ -329,7 +363,7 @@ app.controller('authController', ['$scope','api', function($scope, api) {
             api.users.create($scope.getCredentials()).
                 $then($scope.login).
                     catch(function(data){
-                        alert(data.data.username);
+
                     });
             };
     }]);
@@ -339,3 +373,28 @@ app.controller('authController', ['$scope','api', function($scope, api) {
 // [3] https://docs.djangoproject.com/en/dev/ref/settings/#append-slash
 // [4] https://github.com/tbosch/autofill-event
 // [5] http://remysharp.com/2010/10/08/what-is-a-polyfill/
+
+
+app.controller('chooseCarCtrl', ['$scope','UserCarsService','$modalInstance', function($scope,UserCarsService, $modalInstance) {
+  console.log(UserCarsService)
+  UserCarsService.request.then(function(result){
+    console.log(UserCarsService.data)
+    $scope.cars = UserCarsService.data;
+      console.log($scope.cars)
+  });
+  $scope.ok = function (){
+    if($scope.selected){
+    UserCarsService.setSelected($scope.selected)
+    $modalInstance.close(console.log($scope));
+    } else {
+      alert('You must select a vehicle to continue.')
+    }
+  }
+  $scope.cancel = function () {
+    $modalInstance.dismiss('cancel');
+  };
+  // $scope.cars = UserCarsService.data;
+  // var test = UserCarsService.requestdata[0];
+  // console.log(test)
+
+}]);

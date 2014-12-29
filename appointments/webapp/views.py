@@ -1,5 +1,5 @@
-from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, Availability
-from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, OldUserSerializer, UserSerializer, AppointmentSerializer, AvailabilitySerializer
+from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, Availability, CarMake, Year, CarModel, UserCar
+from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, OldUserSerializer, UserSerializer, AppointmentSerializer, AvailabilitySerializer, CarMakeSerializer, YearSerializer, CarModelSerializer, UserCarSerializer, UserCarCreateSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -260,3 +260,55 @@ class business_list(generics.ListAPIView):
 def index(request):
     context = {}
     return render(request, 'index.html', context)
+
+class CarMakeViewSet(viewsets.ModelViewSet):
+	queryset = CarMake.objects.all()
+	serializer_class = CarMakeSerializer
+
+class YearViewSet(viewsets.ModelViewSet):
+	queryset = Year.objects.all()
+	serializer_class = YearSerializer
+
+class CarModelViewSet(viewsets.ModelViewSet):
+	queryset = CarModel.objects.all()
+	serializer_class = CarModelSerializer
+	def get_queryset(self):
+		"""
+		Filter the availabilities
+		"""
+		queryset = CarModel.objects.all()
+		year = self.request.QUERY_PARAMS.get('year', None)
+		make = self.request.QUERY_PARAMS.get('make', None)
+		if year is not None:
+			queryset = queryset.filter(year=year)
+		if make is not None:
+			queryset = queryset.filter(make=make)
+		return queryset
+
+class UserCarViewSet(viewsets.ModelViewSet):
+	queryset = UserCar.objects.all()
+	serializer_class = UserCarCreateSerializer
+	def get_queryset(self):
+		"""
+		Filter the user cars
+		"""
+		queryset = UserCar.objects.all()
+		serializer_class = UserCarSerializer
+		user = self.request.QUERY_PARAMS.get('user', None)		
+		if user is not None:
+			queryset = queryset.filter(user=user)
+		return queryset
+
+class UserCarListViewSet(viewsets.ModelViewSet):
+	queryset = UserCar.objects.all()
+	serializer_class = UserCarSerializer
+	def get_queryset(self):
+		"""
+		Filter the user cars
+		"""
+		queryset = UserCar.objects.all()
+		serializer_class = UserCarSerializer
+		user = self.request.QUERY_PARAMS.get('user', None)		
+		if user is not None:
+			queryset = queryset.filter(user=user)
+		return queryset							

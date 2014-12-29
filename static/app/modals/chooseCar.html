@@ -1,0 +1,13 @@
+<div class="modal-header">
+            <h3 class="modal-title">Choose a car:</h3>
+            <p>You are trying to book an appointment for Automotive service.<br>Please indicate what vehicle will be serviced:</p>
+</div>
+        <div class="modal-body">
+            <select ng-options="car.model.year.year+' - '+car.model.make.name+' - '+car.model.model for car in cars track by car.id" ng-model="selected">
+				<option value="">-- choose a car --</option>
+			</select>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+		</div>
