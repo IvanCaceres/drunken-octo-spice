@@ -217,15 +217,17 @@ Services.service('UserCarsService', function ($modal,UserCars){
       UserCarsService.update(result.data);
     });
   }
-  this.chooseCar = function(){
+  this.chooseCar = function(business){
         var modalInstance = $modal.open({
       templateUrl: '/static/app/modals/chooseCar.html',
       controller: 'chooseCarCtrl',
       size: 'sm',
       resolve: {
-        // items: function () {
-        //   return $scope.items;
-        // }
+        business: function () {
+          console.log('showing the business that was fed in resolve')
+          console.log(business)
+          return business;
+        }
       }
     });
     return modalInstance;

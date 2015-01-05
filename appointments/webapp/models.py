@@ -61,6 +61,7 @@ class BusinessLocation(models.Model):
 	description = models.TextField()
 	slug = models.CharField(max_length=30, null=True)
 	default_availability = models.IntegerField(blank=False, help_text="Enter the availability limit per hour.", default=0)
+	services = models.ManyToManyField('Service', through='ServiceOffered')
 	# address = models.ForeignKey(Address, related_name)
 	def __unicode__(self):
 		return self.location_name
@@ -81,18 +82,21 @@ class Address(models.Model):
 		verbose_name_plural = 'Addresses'
 
 class Service(models.Model):
-	business_location = models.ForeignKey(BusinessLocation)
 	name = models.CharField(max_length=100)
 	description = models.TextField()
-	price_estimate = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text='(Optional) Set the estimated price that this service will cost.')
 	def __unicode__(self):
 		return self.name
 	class Meta:
 		verbose_name_plural = 'Services'
 
+class ServiceOffered(models.Model):
+	service = models.ForeignKey(Service, related_name = 'service_offered')
+	business_location = models.ForeignKey(BusinessLocation, related_name = 'service_offered')
+	cost = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text='(Optional) Set the cost.')
+
 class Appointment(models.Model):
 	business_location = models.ForeignKey(BusinessLocation)
-	services = models.ManyToManyField(Service)
+	services = models.ManyToManyField(ServiceOffered)
 	# time = models.DateTimeField(auto_now=False, null=True)
 	service_recipient = models.ForeignKey(AUTH_USER_MODEL)
 	completed = models.BooleanField(default=False, help_text="Set to true when appointment has been completed.")

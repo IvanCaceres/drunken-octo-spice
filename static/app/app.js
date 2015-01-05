@@ -59,7 +59,10 @@ app.config(function($stateProvider, $urlRouterProvider, $locationProvider, $http
     .state('stores', {
       url: "/stores/",
       templateUrl: "/static/app/home/search.html",
-      controller: 'StoreMapCtrl'
+      controller: 'StoreMapCtrl',
+      data: {
+      authorizedRoles: [USER_ROLES.all, USER_ROLES.guest, USER_ROLES.admin, USER_ROLES.editor]
+      } 
     })
     .state('profile', {
       url: "/profile/",

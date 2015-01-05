@@ -1,5 +1,5 @@
 from django.contrib import admin
-from webapp.models import Address, SubscriptionTier, BusinessType, Business, BusinessLocation, Service, Appointment, Review, OpeningHours, Availability, CarMake, Year, CarModel, CarBodyStyle
+from webapp.models import Address, SubscriptionTier, BusinessType, Business, BusinessLocation, Service, Appointment, Review, OpeningHours, Availability, CarMake, Year, CarModel, CarBodyStyle, ServiceOffered
 from import_export import resources
 from import_export.admin import ImportExportModelAdmin
 
@@ -19,10 +19,10 @@ class BusinessAdmin(admin.ModelAdmin):
 admin.site.register(Business, BusinessAdmin)
 
 class ServiceInline(admin.StackedInline):
-	model = Service
+	model = ServiceOffered
 	extra = 2
 class BusinessLocationAdmin(admin.ModelAdmin):
-	inlines = [ServiceInline]
+    inlines = [ServiceInline]
 admin.site.register(BusinessLocation, BusinessLocationAdmin)		
 
 
@@ -66,3 +66,5 @@ class CarBodyStyleAdmin(ImportExportModelAdmin):
     resource_class = CarBodyResource
     pass
 admin.site.register(CarBodyStyle, CarBodyStyleAdmin)
+
+admin.site.register(ServiceOffered)

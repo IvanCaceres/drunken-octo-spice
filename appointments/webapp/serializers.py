@@ -1,6 +1,6 @@
 from django.forms import widgets
 from rest_framework import serializers
-from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, OpeningHours, Availability, CarMake, Year, CarModel, UserCar
+from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, OpeningHours, Availability, CarMake, Year, CarModel, UserCar, ServiceOffered, Service
 from django.contrib.auth.models import User
  
 class OldUserSerializer(serializers.ModelSerializer):
@@ -61,13 +61,27 @@ class AvailabilitySerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Availability
 		fields = ('store','date','count')
+
+class ServiceSerializer(serializers.ModelSerializer):
+    # service_offered = ServiceOfferedSerializer(many=False)
+    class Meta:
+        model = Service
+        fields = ('id','name','description')
+
+class ServiceOfferedSerializer(serializers.ModelSerializer):
+    service = ServiceSerializer(many=False)
+    class Meta:
+        model = ServiceOffered
+
 class BusinessLocationSerializer(serializers.ModelSerializer):
-	business = BusinessSerializer(many=False)
-	open_hours = OpeningHoursSerializer(many=True)
-	availability = AvailabilitySerializer(many=True)
-	class Meta:
-		model = BusinessLocation
-		fields = ('business', 'location_name', 'description', 'id', 'slug', 'address', 'open_hours', 'availability', 'default_availability')
+    business = BusinessSerializer(many=False)
+    open_hours = OpeningHoursSerializer(many=True)
+    availability = AvailabilitySerializer(many=True)
+    services = ServiceSerializer(many=True)
+    service_offered = ServiceOfferedSerializer(many=True)
+    class Meta:
+        model = BusinessLocation
+        fields = ('business', 'location_name', 'description', 'id', 'slug', 'address', 'open_hours', 'availability', 'default_availability', 'services', 'service_offered')
 
 class AddressSerializer(serializers.ModelSerializer):
 	business_location = BusinessLocationSerializer(many=False)

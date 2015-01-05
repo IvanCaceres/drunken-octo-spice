@@ -45,12 +45,17 @@ $scope.searchSubmit = function (location){
     User.businessType = $scope.businessType;
     console.log('DA SCOPE')
     console.log($scope)
-    User.date = $scope.data.date;
-  if($scope.address){
-    User.address = $scope.address;
-
-    $state.go('stores');
-  } 
+    if($scope.data && $scope.data.date){
+      User.date = $scope.data.date;
+      if($scope.address){
+        User.address = $scope.address;
+        $state.go('stores');
+      } 
+    } else {
+      alert('You must select a date and time.')
+    }
+    
+  
 }
 }]);
 
@@ -69,7 +74,9 @@ console.log(User)
 
 
   //get stores from server
-var getStores = function(){ 
+var getStores = function(){
+  console.log('coordinateString')
+console.log($scope.coordinateString) 
   User.businessType = User.businessType ? User.businessType.id : null;
   var formatDate = moment(User.date).format("YYYY-MM-DDTHH:mm")
   $scope.businesses = Addresses.query(User.radius||5, $scope.coordinateString, formatDate, User.businessType);
@@ -88,13 +95,18 @@ console.log(result)
     $scope.availabilities.$then(function(result){
       console.log('RESULT')
       console.log(result)
-      var availabilityHTMLObject = function (count,dateTime){
+      var availabilityHTMLObject = function (count,dateTime,businessKey){
+        console.log('creating new avail object')
+        console.log(businessKey)
         this.count = count;
         this.date = dateTime;
+        this.business = $scope.businesses[businessKey];
       };
       availabilityHTMLObject.prototype.bookAppointment = function(business_location,services,when){
-        console.log('THIS')
-        console.log(this)
+        console.log('dumping business_location:')
+        console.log(this.business)
+        console.log('dumping services:')
+        console.log(services)
         var $this = this;
         console.log('dumping UserCarsService:')
         console.log(UserCarsService)
@@ -113,12 +125,14 @@ console.log(result)
         // } else {
           UserCarsService.get(Session.userId);
           console.log(UserCarsService)
-          var modalInstance = UserCarsService.chooseCar();
-          modalInstance.result.then(function (selectedItem) {
+          var modalInstance = UserCarsService.chooseCar(this.business);
+          modalInstance.result.then(function (result) {
+            console.log('result:')
+            console.log(result)
             var cars = [];
             cars.push(UserCarsService.selected.id);
             alert('closed the modal!!!')
-              var Booking = Appointments.post(business_location,services,when,cars);
+              var Booking = Appointments.post(business_location,result.selectedServices,when,cars);
         Booking.$then(function(result){
           console.log('completed booking logging result')
           console.log(result)
@@ -134,18 +148,18 @@ console.log(result)
             for(var y=0;y<result.data.length;y++){
               if($scope.businesses[i].id == result.data[y].store){
               $scope.businesses[i].available = [];
-              $scope.businesses[i].available.push(new availabilityHTMLObject(result.data[y].count,formatDate));
+              $scope.businesses[i].available.push(new availabilityHTMLObject(result.data[y].count,formatDate,i));
               } 
             }
               if(!$scope.businesses[i].available){
                 $scope.businesses[i].available = [];
-                $scope.businesses[i].available.push(new availabilityHTMLObject($scope.businesses[i].business_location.default_availability,formatDate));
+                $scope.businesses[i].available.push(new availabilityHTMLObject($scope.businesses[i].business_location.default_availability,formatDate,i));
               }
           }
         } else{
           for(var i=0;i<$scope.businesses.length;i++){
             $scope.businesses[i].available = [];
-            $scope.businesses[i].available.push(new availabilityHTMLObject($scope.businesses[i].business_location.default_availability,formatDate));
+            $scope.businesses[i].available.push(new availabilityHTMLObject($scope.businesses[i].business_location.default_availability,formatDate,i));
           }
         }
         
@@ -185,6 +199,7 @@ if(User.address){
       // var pos = new google.maps.LatLng(position.coords.latitude,
       //                                  position.coords.longitude);
     console.log(position)
+    console.log('setting coordinateString')
       $scope.coordinateString = position.coords.latitude + ', ' + position.coords.longitude;
       console.log($scope.coordinateString)
       var latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -286,11 +301,12 @@ if(User.address){
       console.log('logging geocded')
     console.log($scope.geocodedResult[0])
   $scope.map = new google.maps.Map(document.getElementById('map-canvas'), {
-    center: new google.maps.LatLng($scope.geocodedResult[0].geometry.location.k, $scope.geocodedResult[0].geometry.location.B),
+    center: new google.maps.LatLng($scope.geocodedResult[0].geometry.location.lat(), $scope.geocodedResult[0].geometry.location.lng()),
     zoom: 12,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
-  $scope.coordinateString = $scope.geocodedResult[0].geometry.location.k+','+$scope.geocodedResult[0].geometry.location.B;
+  console.log('saving the coordstring')
+  $scope.coordinateString = $scope.geocodedResult[0].geometry.location.lat()+','+$scope.geocodedResult[0].geometry.location.lng();
   afterGeocoding();
     });
    } else {
@@ -375,17 +391,37 @@ app.controller('authController', ['$rootScope','$state','api','Session','USER_RO
 // [5] http://remysharp.com/2010/10/08/what-is-a-polyfill/
 
 
-app.controller('chooseCarCtrl', ['$scope','UserCarsService','$modalInstance', function($scope,UserCarsService, $modalInstance) {
+app.controller('chooseCarCtrl', ['$scope','UserCarsService','$modalInstance','business', function($scope,UserCarsService, $modalInstance, business) {
+  $scope.business = business;
   console.log(UserCarsService)
   UserCarsService.request.then(function(result){
     console.log(UserCarsService.data)
     $scope.cars = UserCarsService.data;
       console.log($scope.cars)
   });
+
+  function collectServices(){
+   var services = angular.element('#ServiceForm input:checked');
+   $scope.selectedServices = [];
+   for(var i=0;i<services.length;i++){
+    console.log('serviceChkbox:')
+    console.log(angular.element(services[i]).val())
+    $scope.selectedServices.push(parseInt(angular.element(services[i]).val()))
+   }
+
+  }
   $scope.ok = function (){
     if($scope.selected){
-    UserCarsService.setSelected($scope.selected)
-    $modalInstance.close(console.log($scope));
+      collectServices();
+      if($scope.selectedServices.length > 0){
+        console.log('selectedServices:')
+        console.log($scope.selectedServices)
+        UserCarsService.setSelected($scope.selected)
+        $modalInstance.close($scope);
+      } else {
+        alert('You must select a service.');
+      }
+
     } else {
       alert('You must select a vehicle to continue.')
     }

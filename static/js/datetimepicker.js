@@ -2,7 +2,7 @@
 /*jslint vars:true */
 
 /**
- * @license angular-bootstrap-datetimepicker  version: 0.3.7
+ * @license angular-bootstrap-datetimepicker  version: 0.3.8
  * (c) 2013-2014 Knight Rider Consulting, Inc. http://www.knightrider.com
  * License: MIT
  */
@@ -287,14 +287,17 @@
               };
 
               for (var i = 0; i < 24; i += 1) {
-                var hourMoment = moment.utc(selectedDate).add(i, 'hours');
-                var dateValue = {
-                  'dateValue': hourMoment.valueOf(),
-                  'display': hourMoment.format('LT'),
-                  'active': hourMoment.format('YYYY-MM-DD H') === activeFormat
-                };
+                var hoursArray = [5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20];
+                if(hoursArray.indexOf(i) > 0){
+                  var hourMoment = moment.utc(selectedDate).add(i, 'hours');
+                  var dateValue = {
+                    'dateValue': hourMoment.valueOf(),
+                    'display': hourMoment.format('LT'),
+                    'active': hourMoment.format('YYYY-MM-DD H') === activeFormat
+                  };
 
-                result.dates.push(new DateObject(dateValue));
+                  result.dates.push(new DateObject(dateValue));
+                }
               }
 
               return result;
