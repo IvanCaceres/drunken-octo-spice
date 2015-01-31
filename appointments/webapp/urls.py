@@ -16,6 +16,7 @@ router.register(r'car/years', views.YearViewSet, 'car years')
 router.register(r'car/models', views.CarModelViewSet, 'car models')
 router.register(r'car/users', views.UserCarViewSet, 'user car')
 router.register(r'car/userlist', views.UserCarListViewSet, 'user cars list')
+router.register(r'services', views.ServicesViewSet, 'services view')
 # routers.register(r'api/users/create/', views.EmailUserCreateViewset)
 
 # @api_view(('GET',))

@@ -18,6 +18,15 @@ Services.factory('Businesses', function(djResource){
      }
     }
   });
+Services.factory('Services', function(djResource){
+    return {
+      query: function(name) { 
+        return djResource('api/services/', {}, {
+            query: {method:'GET', params:{format:'json',name:name}, isArray:true}
+    }).query();
+     }
+    }
+  });
 Services.factory('CustomizerProperties', function(djResource){
     return {
     	query: function(furnituretypeID) { 

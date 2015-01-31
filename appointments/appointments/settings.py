@@ -89,7 +89,7 @@ USE_TZ = True
 
 # STATIC_ROOT = '/home/appointments/static/'
 STATICFILES_DIRS = (
-    '/home/appointments/static/',
+    '/home/appts/drunken-octo-spice/static/',
 )
 STATIC_URL = '/static/'
 TEMPLATE_CONTEXT_PROCESSORS = (

@@ -1,12 +1,11 @@
-from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, Availability, CarMake, Year, CarModel, UserCar
-from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, OldUserSerializer, UserSerializer, AppointmentSerializer, AvailabilitySerializer, CarMakeSerializer, YearSerializer, CarModelSerializer, UserCarSerializer, UserCarCreateSerializer
+from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, Availability, CarMake, Year, CarModel, UserCar, Service
+from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, OldUserSerializer, UserSerializer, AppointmentSerializer, AvailabilitySerializer, CarMakeSerializer, YearSerializer, CarModelSerializer, UserCarSerializer, UserCarCreateSerializer, ServiceSerializer
 from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, viewsets
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import render
-from geopy import distance
 from django.db import connection
 from django.contrib.auth import login, logout
 from authentication import QuietBasicAuthentication
@@ -311,4 +310,17 @@ class UserCarListViewSet(viewsets.ModelViewSet):
 		user = self.request.QUERY_PARAMS.get('user', None)		
 		if user is not None:
 			queryset = queryset.filter(user=user)
-		return queryset							
+		return queryset
+
+class ServicesViewSet(viewsets.ModelViewSet):
+	queryset = Service.objects.all()
+	serializer_class = ServiceSerializer
+	def get_queryset(self):
+		"""
+		Filter the availabilities
+		"""
+		queryset = Service.objects.all()
+		nameParam = self.request.QUERY_PARAMS.get('name', None)
+		if nameParam is not None:
+			queryset = queryset.filter(name__istartswith=nameParam)
+		return queryset		

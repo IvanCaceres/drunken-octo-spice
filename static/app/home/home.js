@@ -16,11 +16,25 @@ $scope.selectSearchType = function (){
 
 }]);
 
-app.controller('SearchCtrl', ['$scope', '$state', 'User', function($scope,$state,User) {
+app.controller('SearchCtrl', ['$scope', '$state', 'User', '$http', function($scope,$state,User,$http) {
 // alert('test!');
 $scope.searchTypes = [
 	{name: 'Detect Location'},
-	{name: 'Enter Address'}];
+	{name: 'Enter Address'}
+  ];
+
+$scope.searchServices = function(serviceName){
+    return $http.get('api/services/', {
+      params: {
+        format: 'json',
+        name: serviceName
+      }
+    }).then(function(response){
+      console.log(response.data)
+      return response.data;
+    });
+};
+
 $scope.setSelected = function (searchType){
 	// alert('dis b !');
 	$scope.selected = searchType;

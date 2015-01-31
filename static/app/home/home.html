@@ -1,7 +1,13 @@
 
 <div class="home-container">
+
 <div class="searchContainer" ng-controller="SearchCtrl">
-	<h3>Pick a day and set a time..</h3>
+	   <h3>ZZZZZZSearch for a service</h3>
+    <input type="text" ng-model="asyncSelected" placeholder="Enter the name of the service you're looking for" typeahead="service.name for service in searchServices($viewValue)" typeahead-loading="loadingLocations" class="form-control">
+    <i ng-show="loadingLocations" class="glyphicon glyphicon-refresh"></i>
+
+	<h3 style="margin-top:
+	20px!important;">Pick a day and set a time..</h3>
         <div class="well">
             <p>Formatted Date: {{ $parent.data.date | date:'medium' }}</p>
 
