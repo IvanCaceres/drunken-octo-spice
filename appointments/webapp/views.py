@@ -120,6 +120,7 @@ class address_list(generics.ListAPIView):
 		business_type = self.request.QUERY_PARAMS.get('business_type', None)
 		#first float must be Latitude, second float longitude
 		locationParam = self.request.QUERY_PARAMS.get('location', None)
+		service = self.request.QUERY_PARAMS.get('service', None)
 		
 		if distanceParam is not None and locationParam is not None:
 			# cursor = connection.cursor()
@@ -129,23 +130,39 @@ class address_list(generics.ListAPIView):
 			sqlString = "SELECT id, ( 3959 * acos( cos( radians(" + locationParam[0] + ") ) * cos( radians( lat ) ) * cos( radians( long ) - radians("+locationParam[1]+") ) + sin( radians(" + locationParam[0] + ") ) * sin( radians( lat ) ) ) ) AS distance FROM webapp_address GROUP BY id HAVING ( 3959 * acos( cos( radians(" + locationParam[0] + ") ) * cos( radians( lat ) ) * cos( radians( long ) - radians(" + locationParam[1] + ") ) + sin( radians(" + locationParam[0] + ") ) * sin( radians( lat ) ) ) ) < "+distanceParam+";"
 			addresses = Address.objects.raw(sqlString)
 			# queryset = Address.objects.raw('SELECT id, ( 3959 * acos( cos( radians(37) ) * cos( radians( lat ) ) * cos( radians( long ) - radians(-122) ) + sin( radians(37) ) * sin( radians( lat ) ) ) ) AS distance FROM webapp_address HAVING distance < 25 ORDER BY distance;')
-		if requestDate is not None:
+		if requestDate is not None and requestDate != 'none':
 			# locations = BusinessLocation.objects.filter(availability__date__range=(requestDate,requestDate))
 			requestDateTime = dateutil.parser.parse(requestDate)
 			weekday = requestDateTime.isoweekday()
 			locations = BusinessLocation.objects.filter(open_hours__weekday = weekday , open_hours__from_hour__lte=requestDateTime.time, open_hours__to_hour__gte=requestDateTime.time)
 		if business_type is not None and business_type != 'none':
 			businesses = Business.objects.filter(business_type=business_type)
-			locations = locations.filter(business__in=businesses)
+			if requestDate is not None:
+				locations = locations.filter(business__in=businesses)
+				queryset = queryset.filter(business_location__in=locations)
+				queryset = queryset.filter(id__in=[o.id for o in addresses])
+				return list(queryset)
+			else:
+				locations = BusinessLocation.objects.all()
+				locations = locations.filter(business__in=businesses)
+				queryset = queryset.filter(business_location__in=locations)	
+				queryset = queryset.filter(id__in=[o.id for o in addresses])
+		elif requestDate is not None and business_type == 'none':
 			queryset = queryset.filter(business_location__in=locations)
 			queryset = queryset.filter(id__in=[o.id for o in addresses])
 			return list(queryset)
-		else:
-			queryset = queryset.filter(business_location__in=locations)
+		elif requestDate is None and business_type == 'none':
 			queryset = queryset.filter(id__in=[o.id for o in addresses])
-			return list(queryset)	
 			# queryset.filter(business_location=business_type)
-		
+		if service is not None:
+			businessLocations = BusinessLocation.objects.all()
+			businessLocations = businessLocations.filter(services__id__contains=service)
+			queryset = queryset.filter(business_location__in=businessLocations)						
+		return list(queryset)
+
+class address_detail(generics.RetrieveUpdateDestroyAPIView):
+	queryset = Address.objects.all()
+	serializer_class = AddressSerializer
 
 class business_location_list(generics.ListAPIView):
 	serializer_class = BusinessLocationSerializer

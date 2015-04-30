@@ -27,21 +27,12 @@ Services.factory('Services', function(djResource){
      }
     }
   });
-Services.factory('CustomizerProperties', function(djResource){
-    return {
-    	query: function(furnituretypeID) { 
-    		return djResource('/api/properties/', {}, {
-      			query: {method:'GET', params:{format:'json', furniture_type: furnituretypeID }, isArray:true}
-    }).query();
-     }
-    }
-  });
-
 Services.factory('Addresses', function(djResource){
     return {
-    	query: function(distanceParam, locationParam, date, businessTypeID) { 
+    	query: function(distanceParam, locationParam, date, businessTypeID, serviceID) {
+        console.log('this is the addresses alert') 
     		return djResource('/api/address/', {}, {
-      			query: {method:'GET', params:{format:'json', business_type: businessTypeID||'none', distance: distanceParam, location: locationParam, date:date }, isArray:true}
+      			query: {method:'GET', params:{format:'json', business_type: businessTypeID||'none', distance: distanceParam, location: locationParam, date:date||'none',service:serviceID||'none'}, isArray:true}
     }).query();
      }
     }

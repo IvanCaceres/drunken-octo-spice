@@ -1,0 +1,37 @@
+<header ng-include="'/static/js/templates/header.html'">
+</header>
+
+<h1>{{store.business_location.business.business_name}}</h1>
+
+<div class="store-map-container">
+    <ui-gmap-google-map center='storeMap.center' zoom='storeMap.zoom' options="options">
+        <ui-gmap-markers models="storeMap.marker" coords="'coords'">
+            <ui-gmap-windows show="'show'" options="windowOptions">
+                <div ng-non-bindable>
+                    {{business_location.location_name}}<br>
+                    {{street}} {{city}}, {{state}} {{postal_code}}
+                </div>
+            </ui-gmap-windows>
+        </ui-gmap-markers>
+    </ui-gmap-google-map>
+</div>
+
+<div class="store-services-container">
+    <h2>Choose Service(s)</h2>
+	<div class="list-group services-wrap">
+        <li class="list-group-item service-wrap" ng-repeat="service in store.business_location.service_offered">
+            <input type="checkbox" class="fancy-checkbox-input" name="{{service.service.name|slugify}}" id="{{service.service.name|slugify}}">
+            <label class="fancy-checkbox-label" for="{{service.service.name|slugify}}">
+                <i class="fa fa-check"></i>            
+            </label>
+            {{ service.service.name }} - ${{service.cost}}
+            <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+            <div collapse="isCollapsed">
+                <div class="well well-lg">{{service.service.description}}</div> 
+            </div>
+        </li>
+    </div>
+    <div ng-if="store.service_offered.length == 0">
+        This location currently has no services offered.
+    </div>
+</div>    

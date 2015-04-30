@@ -1,0 +1,70 @@
+<div ui-view>
+<header ng-include="'/static/js/templates/header.html'">
+</header>
+
+<div class="row">
+	<h2>Get started with booking an appointment...</h2>
+	<span>Need help getting started? <a href="#">Click here</a> for some tips to help with your search.</span>
+</div>
+
+<div class="row search-container">
+	<div class="well search-bar">
+		<span class="search-label">type of business</span>
+		<select class="form-control business-type" ng-model="$parent.businessType" ng-options="type.business_type for type in businessTypes">
+			<option value="">All</option>	
+		</select>
+		<span class="search-label max-distance">max distance</span>
+		<input type="text" class="form-control max-distance" ng-model="radiusDistance">
+        <ui-select ng-model="$root.serviceSelected"
+                   theme="bootstrap"
+                   ng-disabled="disabled"
+                   reset-search-input="false"
+                   style="width: 140px;display: inline-block;vertical-align: top;margin-left:20px;">
+            <ui-select-match placeholder="search for a service">{{$select.selected.name}}</ui-select-match>
+            <ui-select-choices repeat="service in services track by $index"
+                               refresh="refreshServices($select.search)"
+                               refresh-delay="0">
+                <div ng-bind="service.name"></div>
+            </ui-select-choices>
+        </ui-select>
+        <div class="dropdown form-control date-select">
+		<a  class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-clock-o"></i></a><ul class="dropdown-menu" role="menu">
+		        <datetimepicker data-ng-model="data.dateDropDownLink" data-datetimepicker-config="{ dropdownSelector: '#dropdown1' }"/>
+		    </ul>
+		</div>
+
+		<button type="submit" class="btn btn-primary search-submit" ng-click="storeSearch()">Go</button>
+		<hr>
+		<span ng-hide="showEnterAddress"><a href="#" ng-click="enterAddress()">Enter address...</a> or hit go to search based on current location.</span>
+		<div class="enter-address-wrap" ng-show="showEnterAddress">
+			<input type="text" class="form-control" placeholder="enter your address" ng-model="$parent.userCustomAddress"> 
+		</div>
+	</div>
+</div>
+
+<div class="row map-container">
+		<div id="map-canvas">
+	        <ui-gmap-google-map center='map.center' zoom='map.zoom' options="options">
+	            <ui-gmap-markers models="map.stores" coords="'coords'">
+	              <ui-gmap-windows show="'show'" options="windowOptions">
+	                <div ng-non-bindable>
+	                	{{business_location.location_name}}<br>
+	                	{{street}} {{city}}, {{state}} {{postal_code}}
+	                </div>
+	              </ui-gmap-windows>
+	            </ui-gmap-markers>
+	        </ui-gmap-google-map>
+    	</div>
+        <div class="list-group store-results">
+            <h1>Store Results: {{radius.label}}</h1>
+
+          <div href="" class="list-group-item" ng-repeat="store in map.stores" ng-click="selectStore(store)" ng-class="{active: map.active == store}">
+            {{store.name}}<br>
+            {{store.telephone}}<br>
+            {{store.street}}<br>
+            {{store.city}}, {{store.state}} {{store.postal_code}}<br>
+            <a class="btn btn-primary btn-sm" ui-sref="home.storeDetail({ id: store.id , test:'heynow'})" role="button">Book Appointment</a>
+          </div>
+        </div>
+</div>
+</div>
