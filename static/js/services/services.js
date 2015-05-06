@@ -188,7 +188,7 @@ Services.service('UserCarsService', function ($modal,UserCars){
     this.get = function(user){
         console.log(UserCarsService)
         UserCarsService.request = UserCars.query(user)
-            .$then(function(result){
+            .$promise.then(function(result){
                 UserCarsService.update(result.data);
             });
     }

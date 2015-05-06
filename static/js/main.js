@@ -105,7 +105,7 @@
   })
 
   //Load controller
-  .controller('MainController', ['$scope','uiGmapGoogleMapApi','uiGmapIsReady','BusinessTypes','Addresses','Services', function($scope, uiGmapGoogleMapApi, uiGmapIsReady, BusinessTypes, Addresses,Services) { 
+  .controller('MainController', ['$scope','uiGmapGoogleMapApi','uiGmapIsReady','BusinessTypes','Addresses','Services','Session','UserCarsService','UserCars', function($scope, uiGmapGoogleMapApi, uiGmapIsReady, BusinessTypes, Addresses,Services,Session,UserCarsService,UserCars) { 
        $scope.map = { center: { latitude: 45, longitude: -73 }, zoom: 14, stores:[]},
        $scope.radiusDistance = 5;
        $scope.showEnterAddress = false;
@@ -118,7 +118,22 @@
      console.log(result)
        $scope.businessTypes = result;
    });
+  if(Session.userId != 'guest'){
+    if(!UserCarsService.data){
+      UserCars.query(Session.userId)
+      .$promise.then(function(result){
+        console.log('after getting cars dump result',result);
+        UserCarsService.update(result);
+        $scope.usercars = result;
+      });
+    } else {
+      $scope.usercars = UserCarsService.data;
+    }
+  }
   
+  $scope.session = Session;
+  console.log('alright lets dump scope', $scope);
+
   //function called when clicking on a store result
   $scope.selectStore = function (store){
     if($scope.map.active){

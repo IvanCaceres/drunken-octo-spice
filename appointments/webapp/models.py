@@ -62,6 +62,7 @@ class BusinessLocation(models.Model):
 	slug = models.CharField(max_length=30, null=True)
 	default_availability = models.IntegerField(blank=False, help_text="Enter the availability limit per hour.", default=0)
 	services = models.ManyToManyField('Service', through='ServiceOffered')
+	cars_serviced = models.ManyToManyField('CarModel')
 	# address = models.ForeignKey(Address, related_name)
 	def __unicode__(self):
 		return self.location_name
@@ -164,7 +165,7 @@ class CarModel(models.Model):
 	make = models.ForeignKey(CarMake)
 	model = models.CharField(max_length=50)
 	def __unicode__(self):
-		return unicode(self.model)
+		return unicode(str(self.year)+' - '+str(self.make)+' - '+str(self.model))
 
 class CarBodyStyle(models.Model):
 	style = models.CharField(max_length=50)

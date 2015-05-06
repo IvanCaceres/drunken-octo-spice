@@ -136,12 +136,18 @@ margin-top: 30px;
 	margin-left: 20px;
 	border: solid 1px #e3e3e3
 }
-.search-container .date-select {
-margin-left: 20px;
-border: solid 1px #e3e3e3;
-display: inline;
-background: transparent;
-cursor: pointer;
+.search-container .search-tooltip {
+	margin-left: 20px;
+	border: solid 1px #e3e3e3;
+	display: inline-block;
+	background: transparent;
+	cursor: pointer;
+	padding: 0;
+	width: auto;
+	height: auto;
+}
+.search-tooltip i {
+	padding: 9px 12px;
 }
 .search-container .date-select:hover {
 border-color: #66afe9;

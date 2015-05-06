@@ -121,6 +121,7 @@ class address_list(generics.ListAPIView):
 		#first float must be Latitude, second float longitude
 		locationParam = self.request.QUERY_PARAMS.get('location', None)
 		service = self.request.QUERY_PARAMS.get('service', None)
+		car = self.request.QUERY_PARAMS.get('car', None)
 		
 		if distanceParam is not None and locationParam is not None:
 			# cursor = connection.cursor()
@@ -157,7 +158,11 @@ class address_list(generics.ListAPIView):
 		if service is not None:
 			businessLocations = BusinessLocation.objects.all()
 			businessLocations = businessLocations.filter(services__id__contains=service)
-			queryset = queryset.filter(business_location__in=businessLocations)						
+			queryset = queryset.filter(business_location__in=businessLocations)
+		if car is not None:
+			businessLocations = BusinessLocation.objects.all()
+			businessLocations = businessLocations.filter(cars_serviced__id__contains=car)
+			queryset = queryset.filter(business_location__in=businessLocations)							
 		return list(queryset)
 
 class address_detail(generics.RetrieveUpdateDestroyAPIView):

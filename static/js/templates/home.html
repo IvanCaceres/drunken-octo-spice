@@ -27,9 +27,15 @@
                 <div ng-bind="service.name"></div>
             </ui-select-choices>
         </ui-select>
-        <div class="dropdown form-control date-select">
+        <div class="dropdown form-control date-select search-tooltip">
 		<a  class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="#" href="#"><i class="fa fa-clock-o"></i></a><ul class="dropdown-menu" role="menu">
 		        <datetimepicker data-ng-model="data.dateDropDownLink" data-datetimepicker-config="{ dropdownSelector: '#dropdown1' }"/>
+		    </ul>
+		</div>
+		<div class="dropdown form-control search-tooltip" ng-if="session.id != 'default' && usercars && usercars.length > 0">
+		<a  class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="userCarList" href="#"><i class="fa fa-car"></i></a>
+		<ul class="dropdown-menu" role="menu" id="userCarList">
+		        <li ng-repeat="car in usercars">{{car.model.year.year}} - {{car.model.make.name}} - {{car.model.model}}</li>
 		    </ul>
 		</div>
 
