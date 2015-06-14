@@ -1,7 +1,11 @@
 <header ng-include="'/static/js/templates/header.html'">
 </header>
 
-<h1>{{store.business_location.business.business_name}}</h1>
+<div class="store-detail-header-wrap">
+    <h1 class="store-detail-header">{{store.business_location.business.business_name}}</h1>
+    {{store.business_location.location_name}}<br>
+                    {{store.street}} {{store.city}}, {{store.state}} {{store.postal_code}}
+</div>
 
 <div class="store-map-container">
     <ui-gmap-google-map center='storeMap.center' zoom='storeMap.zoom' options="options">
@@ -17,21 +21,120 @@
 </div>
 
 <div class="store-services-container">
-    <h2>Choose Service(s)</h2>
-	<div class="list-group services-wrap">
-        <li class="list-group-item service-wrap" ng-repeat="service in store.business_location.service_offered">
-            <input type="checkbox" class="fancy-checkbox-input" name="{{service.service.name|slugify}}" id="{{service.service.name|slugify}}">
-            <label class="fancy-checkbox-label" for="{{service.service.name|slugify}}">
-                <i class="fa fa-check"></i>            
-            </label>
-            {{ service.service.name }} - ${{service.cost}}
+
+    <div class="section-container date-time">
+        <div class="info-content">
+            <h1>1. DATE & TIME</h1>
             <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
-            <div collapse="isCollapsed">
-                <div class="well well-lg">{{service.service.description}}</div> 
+        </div>
+        <div class="inner-content" collapse="isCollapsed">
+            <h3>Start with choosing a day</h3>
+            <div class="dropdown">
+                <a class="dropdown-toggle my-toggle-select" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
+                    <div class="input-append"><input type="text" class="input-large form-control" data-ng-model="data.date" placeholder="Pick a day"><span class="add-on"><i
+                            class="icon-calendar"></i></span>
+                    </div>
+                </a>
+                <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+                    <datetimepicker data-ng-model="data.date"
+                                    data-datetimepicker-config="{ dropdownSelector: '.my-toggle-select', minView: 'day' }"></datetimepicker>
+                </ul>
             </div>
-        </li>
+            <h3>then choose a time</h3>
+            <div class="hour-buttons-container">
+                <div class="hour-button" ng-class="{active:hour == $parent.hourSelected}" ng-click="clickHour(hour)" ng-repeat="hour in hours">{{hour}}</div>
+            </div>
+             <input
+                bs-switch
+                ng-model="isSelected"
+                type="radio"
+                switch-active="{{ isActive }}"
+                switch-on-text="PM"
+                switch-off-text="AM"
+                switch-on-color="{{ onColor }}"
+                switch-off-color="{{ 'danger' }}"
+                switch-animate="{{ animate }}"
+                switch-size="{{ size }}"
+                switch-label="{{ label }}"
+                switch-icon="{{ icon }}"
+                switch-radio-off="{{ radioOff }}"
+                switch-label-width="{{ labelWidth }}"
+                switch-handle-width="{{ handleWidth }}"
+                switch-wrapper="{{ wrapper }}"
+                ng-value="'uno'"
+                ng-true-value="'yep'"
+                ng-false-value="'nope'"
+                switch-inverse="{{ !inverse }}"
+                switch-readonly="{{ readonly }}">  
+        </div>
     </div>
-    <div ng-if="store.service_offered.length == 0">
-        This location currently has no services offered.
+     
+    <div class="section-container">
+        <div class="info-content">
+            <h1>2. CHOOSE SERVICES</h1>
+            <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+        </div>
+        <div class="inner-content" collapse="isCollapsed">
+            <div class="list-group services-wrap">
+                <li class="list-group-item service-wrap" ng-repeat="service in store.business_location.service_offered">
+                    <input type="checkbox" class="fancy-checkbox-input" name="{{service.service.name|slugify}}" id="{{service.service.name|slugify}}">
+                    <label class="fancy-checkbox-label" for="{{service.service.name|slugify}}">
+                        <i class="fa fa-check"></i>            
+                    </label>
+                    {{ service.service.name }} - ${{service.cost}}
+                    <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+                    <div collapse="isCollapsed">
+                        <div class="well well-lg">{{service.service.description}}</div> 
+                    </div>
+                </li>
+            </div>
+
+            <div ng-if="store.service_offered.length == 0">
+                This location currently has no services offered.
+            </div>
+        </div>    
+    </div>    
+
+    <div class="section-container customer-info">
+        <div class="info-content">
+            <h1>3. Choose Vehicle</h1>
+            <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+        </div>
+        <div class="inner-content" collapse="isCollapsed">
+            <div class="vehicles-container">
+                <h5 class="profile-header">Tell us about your vehicle year, make, and model:</h5>
+                <select ng-model="CarYear" ng-options="year.year for year in carYears">
+                    <option value="">-- choose a year --</option>
+                </select>
+                <select ng-model="CarMake" ng-options="make.name for make in carMakes">
+                    <option value="">-- choose a make --</option>
+                </select>
+                <div class="CarModelContainer" ng-show="CarYear && CarMake">
+                    <select ng-model="CarModel" ng-options="model.model for model in carModels">
+                        <option value="">-- choose a make --</option>
+                    </select>
+                    <a ng-show="CarModel" class="pure-button pure-button-primary button-xlarge carModelSave" ng-click="userCarSave()" ng-class="">Save</a>
+                </div>
+            </div>
+        </div>
     </div>
+
+    <div class="section-container customer-info">
+        <div class="info-content">
+            <h1>4. CUSTOMER INFO</h1>
+            <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+        </div>
+        <div class="inner-content" collapse="isCollapsed">
+            <form>
+                <input class="form-control" type="text" placeholder="First Name">
+                <input class="form-control" type="text" placeholder="Last Name">
+                <input class="form-control" type="text" placeholder="Phone Number">
+                <input class="form-control" type="email" placeholder="Email">
+                <textarea class="form-control" placeholder="Describe the issue or reason for your car service appointment"></textarea>
+            </form>
+        </div>
+    </div>
+
+
+
 </div>    

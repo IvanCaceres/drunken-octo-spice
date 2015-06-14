@@ -17,13 +17,16 @@
   window.moment = require('moment');
   require('./datetimepicker');
   require('./vendor/ui-bootstrap-tpls-0.12.1.min');
+  require('bootstrap-switch');
+  require('angular-bootstrap-switch');
   angular.module('AppointmentBookingApp', [
     'ui.router',
     'uiGmapgoogle-maps',
     'AppServices',
     'ui.select',
     'ui.bootstrap',
-    'ui.bootstrap.datetimepicker'
+    'ui.bootstrap.datetimepicker',
+    'frapontillo.bootstrap-switch'
     ])
 
   .config([
@@ -31,10 +34,16 @@
     '$stateProvider',
     '$urlRouterProvider',
     '$resourceProvider',
+    '$httpProvider',
     'uiGmapGoogleMapApiProvider',
     'USER_ROLES',
-    function($locationProvider, $stateProvider, $urlRouterProvider, $resourceProvider, uiGmapGoogleMapApiProvider, USER_ROLES) {
+    function($locationProvider, $stateProvider, $urlRouterProvider, $resourceProvider, $httpProvider, uiGmapGoogleMapApiProvider, USER_ROLES) {
       $locationProvider.html5Mode(true);
+
+      //set csrf cookie options
+      $httpProvider.defaults.xsrfCookieName = 'csrftoken';
+      $httpProvider.defaults.xsrfHeaderName = 'X-CSRFToken';  
+
       // routes
       $stateProvider
         .state("home", {
@@ -185,8 +194,10 @@
     function runSearch(){
       //run the search
       var serviceId = $scope.serviceSelected ? $scope.serviceSelected.id : null;
+
+      var car = $scope.selectedUserCar ? $scope.selectedUserCar.model.id : null;
       
-      Addresses.query($scope.radiusDistance, $scope.coordinateString, businessTypeId, $scope.searchDate||null, serviceId)
+      Addresses.query($scope.radiusDistance, $scope.coordinateString, businessTypeId, $scope.searchDate||null, serviceId, car)
       .$promise.then(function(result){ 
         $scope.parseStores(result);  
       });
@@ -213,6 +224,22 @@
                 console.log($scope.map.stores);
                 $scope.map.rebuild = true;
                 console.log('set map rebuild to true')
+  };
+
+  $scope.selectUserCar = function (car){
+    console.log('you are clicking on a user car!', car);
+    if (car.selected) {
+      car.selected = false;
+      $scope.selectedUserCar = null;
+    } else if (!$scope.selectedUserCar){
+      car.selected = true;    
+      $scope.selectedUserCar = car;
+    } else if ($scope.selectedUserCar) {
+      $scope.selectedUserCar.selected = false;
+      $scope.selectedUserCar = null;
+      car.selected = true;
+      $scope.selectedUserCar = car;
+    }
   };
 
   // uiGmapGoogleMapApi is a promise.
@@ -252,7 +279,7 @@ uiGmapIsReady.promise(1).then(function(instances) {
 });
     }])
   .controller('authController', ['$scope','$state','api','Session','USER_ROLES', 'User', '$modal', authCtrl])
-  .controller('StoreDetailController', ['$scope','$stateParams','AddressDetail', storeDetailCtrl])
+  .controller('StoreDetailController', ['$scope','$stateParams','AddressDetail','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService', storeDetailCtrl])
   .controller('loginModalController', ['$scope','$modalInstance','api','User','Session','USER_ROLES','$rootScope', loginModalCtrl])
 
   .controller('ProfileCtrl', ['$rootScope','$scope','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService', profileCtrl]);

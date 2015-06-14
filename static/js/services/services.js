@@ -12,9 +12,10 @@ Services.factory('BusinessTypes', ['$resource', function($resource){
 
 Services.factory('Addresses', ['$resource', function($resource){
     return {
-      query: function(distanceParam, locationParam, businessTypeID, date, serviceId) {
+      query: function(distanceParam, locationParam, businessTypeID, date, serviceId, userCarModelId) {
+        console.log('running addresses !!!');
         return $resource('/api/address/', {}, {
-            query: {method:'GET', params:{format:'json', business_type: businessTypeID||'none', distance: distanceParam, location: locationParam, date:date, service:serviceId }, isArray:true}
+            query: {method:'GET', params:{format:'json', business_type: businessTypeID||'none', distance: distanceParam, location: locationParam, date:date, service:serviceId, car:userCarModelId }, isArray:true}
     }).query();
      }
     }
@@ -164,7 +165,7 @@ Services.factory('UserCars', function($resource){
     return {
         post: function(user,model) {
             return $resource('api/car/users/', {}, {
-                post: {method:'POST', params:{}, isArray:true}
+                post: {method:'POST', params:{}, isArray:false}
             }).post({user:user,model:model});
         },
         query: function(user) {

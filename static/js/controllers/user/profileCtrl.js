@@ -46,7 +46,7 @@ module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars
         console.log(Session)
         console.log($scope.CarModel.id)
         UserCars.post(Session.userId, $scope.CarModel.id)
-            .$then(function(result){
+            .$promise.then(function(result){
                 console.log('post was successful')
                 console.log(result)
                 UserCars.query(Session.userId)

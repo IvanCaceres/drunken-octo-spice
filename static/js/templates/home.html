@@ -34,8 +34,8 @@
 		</div>
 		<div class="dropdown form-control search-tooltip" ng-if="session.id != 'default' && usercars && usercars.length > 0">
 		<a  class="dropdown-toggle" id="dropdown1" role="button" data-toggle="dropdown" data-target="userCarList" href="#"><i class="fa fa-car"></i></a>
-		<ul class="dropdown-menu" role="menu" id="userCarList">
-		        <li ng-repeat="car in usercars">{{car.model.year.year}} - {{car.model.make.name}} - {{car.model.model}}</li>
+		<ul class="dropdown-menu user-cars-container" role="menu" id="userCarList">
+		        <li ng-repeat="car in usercars" ng-class="{active: car.selected}" ng-click="selectUserCar(car)">{{car.model.year.year}} - {{car.model.make.name}} - {{car.model.model}}</li>
 		    </ul>
 		</div>
 
