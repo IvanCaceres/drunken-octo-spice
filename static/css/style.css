@@ -601,3 +601,29 @@ margin-right: auto;
   font-size: 17px;
   margin-left: 8px;
 }
+.calendar-wrap {
+  background-color: white;
+  width: initial;
+  margin: 0 auto;
+  display: inline-block;
+  padding: 10px;
+  border-radius: 8px;
+  border: solid 2px black;
+}
+.car-saved-wrap {
+  color: white;
+  font-size: 16px;
+  background-color: rgba(242, 242, 255, 0.05);
+  padding: 8px;
+  margin-bottom: 40px;
+}
+.car-saved-wrap i {
+  margin-right: 10px;
+  font-size: 40px;
+}
+.delete-car-selection {
+  color: rgba(255, 0, 0, 0.4);
+  font-size: 28px;
+  margin-left: 10px;
+  cursor: pointer;
+}
