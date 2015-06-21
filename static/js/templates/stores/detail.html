@@ -21,13 +21,15 @@
 </div>
 
 <div class="store-services-container">
-
-    <div class="section-container date-time">
-        <div class="info-content">
+    
+    <div class="section-container" ng-class="{'date-time': step.id == 1, 'customer-info': step.id == 3 || step.id == 4}" ng-repeat="step in steps">
+        
+        <!-- STEP 1 -->
+        <div ng-if="step.id == 1" class="info-content">
             <h1>1. DATE & TIME</h1>
-            <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+            <i class="fa fa-angle-down" ng-click="step.isCollapsed = !step.isCollapsed" ng-init="step.isCollapsed = true"></i>
         </div>
-        <div class="inner-content" collapse="isCollapsed">
+        <div ng-if="step.id == 1" class="inner-content" collapse="step.isCollapsed">
             <h3>Start with choosing a day</h3>
             <div class="dropdown">
                 <a class="dropdown-toggle my-toggle-select" id="dLabel" role="button" data-toggle="dropdown" data-target="#" href="">
@@ -48,33 +50,17 @@
                 bs-switch
                 ng-model="isSelected"
                 type="radio"
-                switch-active="{{ isActive }}"
-                switch-on-text="PM"
-                switch-off-text="AM"
-                switch-on-color="{{ onColor }}"
-                switch-off-color="{{ 'danger' }}"
-                switch-animate="{{ animate }}"
-                switch-size="{{ size }}"
-                switch-label="{{ label }}"
-                switch-icon="{{ icon }}"
-                switch-radio-off="{{ radioOff }}"
-                switch-label-width="{{ labelWidth }}"
-                switch-handle-width="{{ handleWidth }}"
-                switch-wrapper="{{ wrapper }}"
-                ng-value="'uno'"
-                ng-true-value="'yep'"
-                ng-false-value="'nope'"
-                switch-inverse="{{ !inverse }}"
-                switch-readonly="{{ readonly }}">  
+                switch-on-text="{{'PM'}}"
+                switch-off-text="{{'AM'}}"
+                >  
         </div>
-    </div>
-     
-    <div class="section-container">
-        <div class="info-content">
+
+        <!-- STEP 2 -->
+        <div ng-if="step.id == 2" class="info-content">
             <h1>2. CHOOSE SERVICES</h1>
-            <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+            <i class="fa fa-angle-down" ng-click="step.isCollapsed = !step.isCollapsed" ng-init="step.isCollapsed = true"></i>
         </div>
-        <div class="inner-content" collapse="isCollapsed">
+        <div ng-if="step.id == 2" class="inner-content" collapse="step.isCollapsed">
             <div class="list-group services-wrap">
                 <li class="list-group-item service-wrap" ng-repeat="service in store.business_location.service_offered">
                     <input type="checkbox" class="fancy-checkbox-input" name="{{service.service.name|slugify}}" id="{{service.service.name|slugify}}">
@@ -92,39 +78,39 @@
             <div ng-if="store.service_offered.length == 0">
                 This location currently has no services offered.
             </div>
-        </div>    
-    </div>    
+        </div> 
 
-    <div class="section-container customer-info">
-        <div class="info-content">
+        <!-- STEP 3 -->
+
+        <div ng-if="step.id == 3" class="info-content">
             <h1>3. Choose Vehicle</h1>
-            <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+            <i class="fa fa-angle-down" ng-click="step.isCollapsed = !step.isCollapsed" ng-init="step.isCollapsed = true"></i>
         </div>
-        <div class="inner-content" collapse="isCollapsed">
+        <div ng-if="step.id == 3" class="inner-content" collapse="step.isCollapsed">
             <div class="vehicles-container">
                 <h5 class="profile-header">Tell us about your vehicle year, make, and model:</h5>
-                <select ng-model="CarYear" ng-options="year.year for year in carYears">
-                    <option value="">-- choose a year --</option>
+                <select ng-model="$parent.$parent.CarYear" ng-change="$parent.updateCarModels()" ng-options="year.year for year in carYears">
+                    <option value="">-- choose a yzzzear --</option>
                 </select>
-                <select ng-model="CarMake" ng-options="make.name for make in carMakes">
+                <select ng-model="$parent.$parent.CarMake" ng-change="$parent.updateCarModels()" ng-options="make.name for make in carMakes">
                     <option value="">-- choose a make --</option>
                 </select>
-                <div class="CarModelContainer" ng-show="CarYear && CarMake">
-                    <select ng-model="CarModel" ng-options="model.model for model in carModels">
+                <div class="CarModelContainer" ng-show="$parent.CarYear && $parent.CarMake">
+                    <select ng-model="$parent.CarModel" ng-options="model.model for model in $parent.carModels">
                         <option value="">-- choose a make --</option>
                     </select>
-                    <a ng-show="CarModel" class="pure-button pure-button-primary button-xlarge carModelSave" ng-click="userCarSave()" ng-class="">Save</a>
+                    <a ng-show="$parent.CarModel" class="pure-button pure-button-primary button-xlarge carModelSave" ng-click="userCarSave()" ng-class="">Save</a>
                 </div>
             </div>
         </div>
-    </div>
+        
+        <!-- STEP 4 -->
 
-    <div class="section-container customer-info">
-        <div class="info-content">
+        <div ng-if="step.id == 4" class="info-content">
             <h1>4. CUSTOMER INFO</h1>
-            <i class="fa fa-angle-down" ng-click="isCollapsed = !isCollapsed" ng-init="isCollapsed = true"></i>
+            <i class="fa fa-angle-down" ng-click="step.isCollapsed = !step.isCollapsed" ng-init="step.isCollapsed = true"></i>
         </div>
-        <div class="inner-content" collapse="isCollapsed">
+        <div ng-if="step.id == 4" class="inner-content" collapse="step.isCollapsed">
             <form>
                 <input class="form-control" type="text" placeholder="First Name">
                 <input class="form-control" type="text" placeholder="Last Name">
@@ -133,8 +119,10 @@
                 <textarea class="form-control" placeholder="Describe the issue or reason for your car service appointment"></textarea>
             </form>
         </div>
+
+        <div class="next-step" ng-show="!step.isCollapsed">
+           <span>Next</span> <i class="fa fa-arrow-circle-down"></i> 
+        </div>    
     </div>
-
-
 
 </div>    
