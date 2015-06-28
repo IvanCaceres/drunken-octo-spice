@@ -1,7 +1,6 @@
-module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars,Session, UserCarsService) {
+module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars,Session, UserCarsService, Appointments) {
 // alert('test!');
     $scope.user = $rootScope.user;
-
     CarYears.query()
         .$promise.then(function(result){
             $scope.carYears = result;
@@ -55,6 +54,7 @@ module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars
                     });
             })
     }
+
     $scope.userCarDelete = function(userCar, $index) {
 
         var userCarId = userCar.id;
@@ -65,4 +65,17 @@ module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars
                 $scope.userCars.splice($index, 1);
             })
     }
+
+    $scope.getAppointments = function() {
+        Appointments.query(Session.userId)
+        .$promise.then(function(result){
+            console.log('dude we got the appointments show me them', result);
+            for(var i=0;i<result.length;i++){
+                result[i].date_string = moment(result[i].when).format('MM/DD/YY [at] HH:mm A');
+            }
+            $scope.appointments = result;
+        });
+    }
+    $scope.getAppointments();
+
 };

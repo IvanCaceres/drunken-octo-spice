@@ -42,10 +42,12 @@
             </div>
              <input
                 bs-switch
-                ng-model="isSelected"
+                ng-model="$parent.$parent.meridiem"
                 type="radio"
                 switch-on-text="{{'PM'}}"
                 switch-off-text="{{'AM'}}"
+                ng-true-value="'pm'"
+                ng-false-value="'am'"
                 >  
         </div>
 

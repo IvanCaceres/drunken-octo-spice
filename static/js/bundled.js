@@ -57444,7 +57444,7 @@ module.exports = function($scope, $modalInstance, api, User, Session, USER_ROLES
 };
 
 },{}],25:[function(require,module,exports){
-module.exports = function($scope,$stateParams,AddressDetail, CarYears, CarModels, CarMakes, UserCars, Session, UserCarsService) {
+module.exports = function($scope,$stateParams,AddressDetail, CarYears, CarModels, CarMakes, UserCars, Session, UserCarsService, Appointments) {
     console.log('store detail scope')
     console.log($scope)
     console.log($stateParams)
@@ -57610,10 +57610,39 @@ module.exports = function($scope,$stateParams,AddressDetail, CarYears, CarModels
 					alert('please enter a description');
 					break;
 				}
-				return true;
+				$scope.submitAppointment();
 			break;	
 		}	
 	};
+
+	$scope.setupDate = function () {
+		console.log('show me the chosen DATE', $scope.data.date);
+		console.log('show me the chosen hour', $scope.data.hourSelected);
+		console.log('show me the chosen meridiem', $scope.meridiem);
+		if($scope.meridiem == true){
+			if ($scope.data.hourSelected != 12) {
+				$scope.data.hourSelected = $scope.data.hourSelected + 12;
+			}
+		} else if ($scope.meridiem == false) {
+			if ($scope.data.hourSelected == 12) {
+				$scope.data.hourSelected = 24;
+			}
+		}
+
+		var dateObj = moment($scope.data.date);
+		dateObj.add($scope.data.hourSelected, 'h');
+		$scope.data.date = dateObj.format("YYYY-MM-DDTHH:mm");
+	}
+
+	$scope.submitAppointment = function () {
+		$scope.setupDate();
+		Appointments.post($scope.store.id, $scope.data.services, $scope.data.date, [$scope.data.carModel.id], $scope.data.first_name, $scope.data.last_name, $scope.data.phone, $scope.data.email, $scope.data.description)
+		.$promise.then(function(){
+			alert('Success: Your appointment was booked.');	
+		}, function(){
+			alert('There was an error. Please check data and try again.')
+		});
+	}
 
 	$scope.updateServiceSelection = function(service) {
 		console.log('calling update service selection show args', arguments);
@@ -57673,10 +57702,9 @@ module.exports = function($scope,$stateParams,AddressDetail, CarYears, CarModels
 };
 
 },{}],26:[function(require,module,exports){
-module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars,Session, UserCarsService) {
+module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars,Session, UserCarsService, Appointments) {
 // alert('test!');
     $scope.user = $rootScope.user;
-
     CarYears.query()
         .$promise.then(function(result){
             $scope.carYears = result;
@@ -57730,6 +57758,7 @@ module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars
                     });
             })
     }
+
     $scope.userCarDelete = function(userCar, $index) {
 
         var userCarId = userCar.id;
@@ -57740,6 +57769,19 @@ module.exports = function($rootScope,$scope,CarYears,CarModels,CarMakes,UserCars
                 $scope.userCars.splice($index, 1);
             })
     }
+
+    $scope.getAppointments = function() {
+        Appointments.query(Session.userId)
+        .$promise.then(function(result){
+            console.log('dude we got the appointments show me them', result);
+            for(var i=0;i<result.length;i++){
+                result[i].date_string = moment(result[i].when).format('MM/DD/YY [at] HH:mm A');
+            }
+            $scope.appointments = result;
+        });
+    }
+    $scope.getAppointments();
+
 };
 },{}],27:[function(require,module,exports){
 /*globals define, jQuery */
@@ -58416,10 +58458,10 @@ uiGmapIsReady.promise(1).then(function(instances) {
 });
     }])
   .controller('authController', ['$scope','$state','api','Session','USER_ROLES', 'User', '$modal', authCtrl])
-  .controller('StoreDetailController', ['$scope','$stateParams','AddressDetail','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService', storeDetailCtrl])
+  .controller('StoreDetailController', ['$scope','$stateParams','AddressDetail','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService','Appointments', storeDetailCtrl])
   .controller('loginModalController', ['$scope','$modalInstance','api','User','Session','USER_ROLES','$rootScope', loginModalCtrl])
 
-  .controller('ProfileCtrl', ['$rootScope','$scope','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService', profileCtrl]);
+  .controller('ProfileCtrl', ['$rootScope','$scope','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService','Appointments', profileCtrl]);
 }());
 },{"./angular-google-maps.min":22,"./controllers/auth/authCtrl":23,"./controllers/auth/loginModalCtrl":24,"./controllers/stores/detail":25,"./controllers/user/profileCtrl":26,"./datetimepicker":27,"./services/services":29,"./ui-select.min":30,"./vendor/ui-bootstrap-tpls-0.12.1.min":31,"angular":4,"angular-bootstrap-switch":1,"angular-resource":2,"angular-ui-router":3,"bootstrap":6,"bootstrap-switch":5,"jquery":19,"lodash":20,"moment":21}],29:[function(require,module,exports){
 var Services = angular.module('AppServices', ['ngResource']);
@@ -58454,6 +58496,25 @@ Services.factory('AddressDetail', ['$resource', function($resource){
      }
     }
   }]);
+
+Services.factory('Appointments', function($resource){
+  var resourceErrorHandler = function(error){
+    console.log('AHHH ERROR')
+    console.log(error)
+  }
+    return {
+      post: function(business_location,services,when,cars,first_name,last_name,phone,email,description) { 
+        return $resource('api/appointments/', {}, {
+            post: {method:'POST', params:{}, isArray:false}
+    }).post({availability:9,business_location: business_location, services:services, when:when, service_recipient: 2, cars:cars, first_name:first_name, last_name:last_name, phone:phone, email:email, description:description});
+     },
+     query: function(userId) {
+        return $resource('api/user_appointments/', {}, {
+            query: {method:'GET', params:{format:'json',user:userId}, isArray:true}
+        }).query();
+     }
+    }
+  });
 
 Services.factory('Services', ['$resource', function($resource){
     return {

@@ -33,6 +33,7 @@ urlpatterns = patterns(
     url(r'^api/address/$', views.address_list.as_view()),
     url(r'^api/address_detail/(?P<pk>[0-9]+)/', views.address_detail.as_view()),
     url(r'^api/business/$', views.business_list.as_view()),
+    url(r'^api/user_appointments/$', views.GetAppointments.as_view()),
     url(r'^api/business/location$', views.business_location_list.as_view()),
     url(r'^api/auth/$', views.AuthView.as_view(),name='authenticate'),
 )

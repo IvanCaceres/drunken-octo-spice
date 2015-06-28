@@ -5,7 +5,7 @@
 <p style="text-align:left">Welcome, {{user}}</p>
 
 
-
+<h4 class="profile-header">Appointments:</h4>
 <div class="panel panel-default">
   <!-- Default panel contents   <div class="panel-heading">Saved Vehicles :</div>
   <div ng-show="userCars.length == 0"class="panel-body">
@@ -13,11 +13,32 @@
   </div>
 
   <!-- List group -->
-  <ul ng-hide="userCars.length == 0"class="list-group">
-    <li ng-repeat="car in userCars"class="list-group-item"><p class="userCarTxtCnt">{{car.model.year.year}} - {{car.model.make.name}} - {{car.model.model}}</p>
-    <button type="button" class="btn btn-danger carDeleteBtn" ng-click="userCarDelete(car, $index)">Delete</button>
-    </li>
-  </ul>
+    
+    <ul ng-hide="appointments.length == 0"class="list-group">
+	    <li ng-repeat="appointment in appointments"class="list-group-item"><p class="userCarTxtCnt">{{appointment.business_location.business.business_name}}
+	    	<br>
+	    	({{appointment.business_location.location_name}})
+	    	<br>
+	    	{{appointment.date_string}}</p>
+	    <button type="button" class="btn btn-danger carDeleteBtn" ng-click="userCarDelete(car, $index)">Delete</button>
+	    </li>
+    </ul>
+</div>
+
+<h4 class="profile-header">Saved Cars:</h4>
+<div class="panel panel-default">
+  <!-- Default panel contents   <div class="panel-heading">Saved Vehicles :</div>
+  <div ng-show="userCars.length == 0"class="panel-body">
+    <p>It appears that you have no cars saved, please add one.</p>
+  </div>
+
+  <!-- List group -->
+    
+    <ul ng-hide="userCars.length == 0"class="list-group">
+	    <li ng-repeat="car in userCars"class="list-group-item"><p class="userCarTxtCnt">{{car.model.year.year}} - {{car.model.make.name}} - {{car.model.model}}</p>
+	    <button type="button" class="btn btn-danger carDeleteBtn" ng-click="userCarDelete(car, $index)">Delete</button>
+	    </li>
+    </ul>
 </div>
 
 <div class="vehicles-container">

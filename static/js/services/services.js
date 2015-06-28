@@ -31,6 +31,25 @@ Services.factory('AddressDetail', ['$resource', function($resource){
     }
   }]);
 
+Services.factory('Appointments', function($resource){
+  var resourceErrorHandler = function(error){
+    console.log('AHHH ERROR')
+    console.log(error)
+  }
+    return {
+      post: function(business_location,services,when,cars,first_name,last_name,phone,email,description) { 
+        return $resource('api/appointments/', {}, {
+            post: {method:'POST', params:{}, isArray:false}
+    }).post({availability:9,business_location: business_location, services:services, when:when, service_recipient: 2, cars:cars, first_name:first_name, last_name:last_name, phone:phone, email:email, description:description});
+     },
+     query: function(userId) {
+        return $resource('api/user_appointments/', {}, {
+            query: {method:'GET', params:{format:'json',user:userId}, isArray:true}
+        }).query();
+     }
+    }
+  });
+
 Services.factory('Services', ['$resource', function($resource){
     return {
         query: function(name) {

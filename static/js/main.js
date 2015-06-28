@@ -279,8 +279,8 @@ uiGmapIsReady.promise(1).then(function(instances) {
 });
     }])
   .controller('authController', ['$scope','$state','api','Session','USER_ROLES', 'User', '$modal', authCtrl])
-  .controller('StoreDetailController', ['$scope','$stateParams','AddressDetail','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService', storeDetailCtrl])
+  .controller('StoreDetailController', ['$scope','$stateParams','AddressDetail','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService','Appointments', storeDetailCtrl])
   .controller('loginModalController', ['$scope','$modalInstance','api','User','Session','USER_ROLES','$rootScope', loginModalCtrl])
 
-  .controller('ProfileCtrl', ['$rootScope','$scope','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService', profileCtrl]);
+  .controller('ProfileCtrl', ['$rootScope','$scope','CarYears','CarModels','CarMakes','UserCars','Session','UserCarsService','Appointments', profileCtrl]);
 }());

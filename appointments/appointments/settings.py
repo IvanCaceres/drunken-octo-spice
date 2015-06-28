@@ -38,7 +38,8 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'webapp',
     'rest_framework',
-    'import_export'
+    'import_export',
+    'djrill'
 )
 
 MIDDLEWARE_CLASSES = (
@@ -102,3 +103,9 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
     "django.core.context_processors.request"
 )
+
+MANDRILL_API_KEY = 'YOnjLTvHFKuZM41J0hTa2w'
+
+EMAIL_BACKEND = "djrill.mail.backends.djrill.DjrillBackend"
+
+DEFAULT_FROM_EMAIL = 'admin@appoint.me'

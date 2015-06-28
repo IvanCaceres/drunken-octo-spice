@@ -89,10 +89,16 @@ class AddressSerializer(serializers.ModelSerializer):
 		model = Address
 		fields = ('street', 'id', 'city', 'state', 'postal_code', 'lat', 'long', 'business_location')
 
+class GetAppointmentsSerializer(serializers.ModelSerializer):
+    business_location = BusinessLocationSerializer(many=False)
+    class Meta:
+        model = Appointment
+        fields = ('availability' , 'business_location', 'services', 'when', 'service_recipient', 'completed', 'cars', 'first_name', 'last_name', 'email', 'phone', 'description')
+
 class AppointmentSerializer(serializers.ModelSerializer):
-	class Meta:
-		model = Appointment
-		fields = ('availability' , 'business_location', 'services', 'when', 'service_recipient', 'completed', 'cars')
+    class Meta:
+        model = Appointment
+        fields = ('availability' , 'business_location', 'services', 'when', 'service_recipient', 'completed', 'cars', 'first_name', 'last_name', 'email', 'phone', 'description')
 
 class CarMakeSerializer(serializers.ModelSerializer):
     class Meta:

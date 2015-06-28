@@ -1,6 +1,7 @@
 from webapp.models import Business, BusinessType, BusinessLocation, Address, Appointment, Availability, CarMake, Year, CarModel, UserCar, Service
-from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, OldUserSerializer, UserSerializer, AppointmentSerializer, AvailabilitySerializer, CarMakeSerializer, YearSerializer, CarModelSerializer, UserCarSerializer, UserCarCreateSerializer, ServiceSerializer
+from webapp.serializers import BusinessSerializer, BusinessTypeSerializer, BusinessLocationSerializer, AddressSerializer, OldUserSerializer, UserSerializer, GetAppointmentsSerializer, AppointmentSerializer, AvailabilitySerializer, CarMakeSerializer, YearSerializer, CarModelSerializer, UserCarSerializer, UserCarCreateSerializer, ServiceSerializer
 from django.http import Http404
+from django.core.mail import EmailMessage
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, generics, viewsets
@@ -16,6 +17,7 @@ from rest_framework.permissions import AllowAny
 from permissions import IsStaffOrTargetUser, IsOwnerOrReadOnly
 from rest_framework.exceptions import ParseError, APIException
 import dateutil.parser
+
 class ServiceRejected(APIException):
     status_code = 400
     default_detail = 'Service temporarily unavailable, try again later.'
@@ -46,25 +48,38 @@ class type_list(generics.ListAPIView):
 	def get_queryset(self):
 		queryset = BusinessType.objects.all()
 		return queryset
+
+class GetAppointments(generics.ListAPIView):
+	serializer_class = GetAppointmentsSerializer
+	def get_queryset(self):
+		queryset = Appointment.objects.all()
+		user = self.request.QUERY_PARAMS.get('user', None)
+		if user is not None:
+			queryset = queryset.filter(service_recipient=user)
+		return queryset		
 		
 class AppointmentViewSet(viewsets.ModelViewSet):
 	queryset = Appointment.objects.all()
 	serializer_class = AppointmentSerializer
-	permission_classes = (permissions.IsAuthenticatedOrReadOnly,
-                          IsOwnerOrReadOnly,)
+	permission_classes = (IsOwnerOrReadOnly,)
+
 	def perform_create(self, serializer):
 		# serializer = AppointmentSerializer(data=request.data)
 		# return serializer
-		serializer.validated_data['service_recipient'] = self.request.user
+		if self.request.user.is_authenticated():
+			serializer.validated_data['service_recipient'] = self.request.user
+		else:
+			serializer.validated_data['service_recipient'] = User.objects.get(pk=30)
+			
 		avQueryset = Availability.objects.filter(date__range=(serializer.validated_data['when'], serializer.validated_data['when']), store_id=serializer.validated_data['business_location'].id)
 		r = list(avQueryset[:1])
-		userCheck = avQueryset.filter(appointment__service_recipient = self.request.user)
+		userCheck = avQueryset.filter(appointment__service_recipient = serializer.validated_data['service_recipient'])
 		if userCheck.exists():
 			raise APIException('you have already booked an appointment for this time slot at this location')
 		if r:
 			if r[0].count > 0 :
-				###set the availability object####
 				serializer.validated_data['availability'] = r[0]
+				###set the availability object####
 				serializer.save()
 				newCount = r[0].count - 1
 				a = Availability.objects.get(id=r[0].id)
@@ -84,10 +99,17 @@ class AppointmentViewSet(viewsets.ModelViewSet):
 			serializer.save()
 			# raise Exception('Bang there is no more room')
 		# raise Exception('lol')
+
+		user = serializer.validated_data['service_recipient']
+		msg = EmailMessage(subject="Thank you for booking an appointment!", from_email="confirmation@appoint.me", to=[serializer.validated_data['email']])
+		msg.template_name = "appointment-confirmation"# A Mandrill template name
+		msg.global_merge_vars = {# Merge tags in your template
+			'EMAIL': serializer.validated_data['email'],
+			'WHEN': serializer.validated_data['when'].strftime('%l:%M%p on %b %d, %Y')
+		}
+		msg.send()
+
 		return serializer
-		APIException()
-		return Response(serializer.errors,
-			status=status.HTTP_400_BAD_REQUEST)
 
 class AvailabilityViewSet(viewsets.ModelViewSet):
 	queryset = Availability.objects.all()

@@ -105,7 +105,12 @@ class Appointment(models.Model):
 	availability = models.ForeignKey(
 		'Availability', related_name = 'appointment'
 	)
-	cars = models.ManyToManyField('UserCar')
+	cars = models.ManyToManyField('CarModel')
+	first_name = models.CharField(max_length=20, null=True, blank=False)
+	last_name = models.CharField(max_length=20, null=True, blank=False)
+	description = models.CharField(max_length=200, null=True, blank=False)
+	email = models.EmailField(null=True, blank=False)
+	phone = models.CharField(max_length=20, null=True, blank=False)
 	# def __unicode__(self):
 	# 	return  u'%s %s %s %s %s' % (self.service_recipient," - ", self.business_location)
 	def __unicode__(self):

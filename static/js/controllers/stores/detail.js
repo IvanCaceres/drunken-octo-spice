@@ -1,4 +1,4 @@
-module.exports = function($scope,$stateParams,AddressDetail, CarYears, CarModels, CarMakes, UserCars, Session, UserCarsService) {
+module.exports = function($scope,$stateParams,AddressDetail, CarYears, CarModels, CarMakes, UserCars, Session, UserCarsService, Appointments) {
     console.log('store detail scope')
     console.log($scope)
     console.log($stateParams)
@@ -164,10 +164,39 @@ module.exports = function($scope,$stateParams,AddressDetail, CarYears, CarModels
 					alert('please enter a description');
 					break;
 				}
-				return true;
+				$scope.submitAppointment();
 			break;	
 		}	
 	};
+
+	$scope.setupDate = function () {
+		console.log('show me the chosen DATE', $scope.data.date);
+		console.log('show me the chosen hour', $scope.data.hourSelected);
+		console.log('show me the chosen meridiem', $scope.meridiem);
+		if($scope.meridiem == true){
+			if ($scope.data.hourSelected != 12) {
+				$scope.data.hourSelected = $scope.data.hourSelected + 12;
+			}
+		} else if ($scope.meridiem == false) {
+			if ($scope.data.hourSelected == 12) {
+				$scope.data.hourSelected = 24;
+			}
+		}
+
+		var dateObj = moment($scope.data.date);
+		dateObj.add($scope.data.hourSelected, 'h');
+		$scope.data.date = dateObj.format("YYYY-MM-DDTHH:mm");
+	}
+
+	$scope.submitAppointment = function () {
+		$scope.setupDate();
+		Appointments.post($scope.store.id, $scope.data.services, $scope.data.date, [$scope.data.carModel.id], $scope.data.first_name, $scope.data.last_name, $scope.data.phone, $scope.data.email, $scope.data.description)
+		.$promise.then(function(){
+			alert('Success: Your appointment was booked.');	
+		}, function(){
+			alert('There was an error. Please check data and try again.')
+		});
+	}
 
 	$scope.updateServiceSelection = function(service) {
 		console.log('calling update service selection show args', arguments);
